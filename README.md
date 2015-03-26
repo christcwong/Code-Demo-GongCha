@@ -2,8 +2,9 @@
 Part of the source code for Roster and stock check system demonstration
 
 ### Important Files:
-Views under the "views" folder for front-end code.
-Attributes under the "attributes" folder for controller behaviour modification
+
+* Views under the "views" folder for front-end code.
+* Attributes under the "attributes" folder for controller behaviour modification
 
 ### Skills/Tools Involved:
 
