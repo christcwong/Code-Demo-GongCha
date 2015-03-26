@@ -1,0 +1,92 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Stock>
+
+@{
+    ViewBag.Title = "Ingredient List";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>Gong Cha Ingredient List for AU Date @GongChaDateTimeWrapper.Now.Date.ToString("yyyy.MM.dd")</h2>
+
+<div class="table-responsive">
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Item.Serial)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Item.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Item.ChinName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Item.Specification)
+        </th>
+        <th>
+            @Html.Label("Amount")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Item.GrossWeight)
+        </th>
+        <th colspan="3" align="center">
+            @Html.DisplayName("Volume")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Item.CBM)
+        </th>
+        <th>
+            @Html.DisplayName("Total (kgs)")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpirationDate)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.Serial)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.ChinName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.Specification)
+        </td>
+        <td>
+           @Html.DisplayFor(modelItem => item.Quantity)
+           @Html.DisplayFor(modelItem => item.Item.PackageUnit.Symbol)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.GrossWeight)
+            @Html.DisplayFor(modelItem => item.Item.GrossWeightUnit.Symbol)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.VolumeH)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.VolumeW)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.VolumeL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Item.CBM)
+        </td>
+        <td>
+            @Html.Display("0.00")            
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem=>item.ExpirationDate)
+        </td>
+    </tr>
+}
+
+</table>
+</div>
+<div>
+    @Html.ActionLink("Back to List", "IngredientListIndex")
+</div>

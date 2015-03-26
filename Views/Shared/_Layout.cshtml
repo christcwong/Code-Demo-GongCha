@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    @*@Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")*@
+
+    @Scripts.Render("~/bundles/jquery")
+
+
+    <!-- Latest compiled and minified CSS -->
+    @Styles.Render("~/Content/bootstrap")
+    @Styles.Render("~/Content/css")
+
+    @RenderSection("styles",required: false)
+</head>
+<body>
+    @if (ViewBag.StatusMessage != null)
+    {
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  @ViewBag.StatusMessage
+                </div>
+        
+        @*<div style="position: fixed; left: 50%; z-index: 10000; top: 0px;">
+            <div style="position: relative; left: -50%; background-color: #cacaca; color: #000; padding: 10px;">
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  @ViewBag.StatusMessage
+                </div>
+            </div>
+        </div>*@
+    }
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand visible-xs" href="@Url.Action("Index", "Home")">GC Victoria System</a>
+                <a class="navbar-brand visible-sm" href="@Url.Action("Index", "Home")">GC Victoria Management System</a>
+                <a class="navbar-brand visible-md" href="@Url.Action("Index", "Home")">Gong Cha Victoria Management System</a>
+                <a class="navbar-brand visible-lg" href="@Url.Action("Index", "Home")">Gong Cha Victoria Management System</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="#">@User.Identity.Name</a>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Sales", "Index", "Sales")</li>
+                        <li>
+                            @Html.ActionLink("Roster", "Index", "Roster")</li>
+                        <li>
+                            @Html.ActionLink("Inventory", "Index", "Inventory")</li>
+                        <li>
+                            @Html.ActionLink("Operation", "Index", "Operation")</li>
+                        <li>
+                            @Html.ActionLink("Logout", "Logout", "Member")</li>
+                    }
+                    else
+                    {
+                        <li>
+                            @Html.ActionLink("Login", "Login", "Member")</li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            @RenderBody()
+        </div>
+    </div>
+
+
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    
+</body>
+</html>

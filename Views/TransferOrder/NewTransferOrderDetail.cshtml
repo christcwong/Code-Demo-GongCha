@@ -1,0 +1,19 @@
+﻿@model GongChaWebApplication.Models.TransferOrderDetail
+@{    Layout = null; }
+<tr class="ItemDetail">
+    <td>
+        @*<input type="hidden" id="Details_@(ViewBag.RowId)__Id" class="iHidden"  name='Details[@ViewBag.RowId].Id' />*@
+        <input type='text' class="form-control" id='Details_@(ViewBag.RowId)__ItemSelector' placeholder="Enter Item Serial..."  name='Details[@ViewBag.RowId].ItemSelector' data-autocomplete="@Url.Action("AutoComplete", "Item")"/>
+        <input type='hidden' class="form-control" id='Details_@(ViewBag.RowId)__ItemId'   name='Details[@ViewBag.RowId].ItemId'"/>
+    </td>
+    <td>
+        <span id="Details_@(ViewBag.RowId)__SrcStockAmount" />
+    </td>
+    <td>
+        <input type="text" class="form-control" id="Details_@(ViewBag.RowId)__QuantityChange" name="Details[@(ViewBag.RowId)].QuantityChange" />
+        <span id="Details_@(ViewBag.RowId)__ItemQuantityUnit" />
+    </td>
+    <td>
+        <input type="button" id="Details_@(ViewBag.RowId)_Remove" class="btn btn-default" value="Remove" />
+    </td>
+</tr>

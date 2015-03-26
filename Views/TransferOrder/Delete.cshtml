@@ -1,0 +1,62 @@
+﻿@model GongChaWebApplication.Models.TransferOrder
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>TransferOrder</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SourceLocation.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SourceLocation.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DestinationLocation.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DestinationLocation.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Issuer.Email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Issuer.Email)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IssueDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IssueDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.EffectiveDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EffectiveDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StatusValue)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StatusValue)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

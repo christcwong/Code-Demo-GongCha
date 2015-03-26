@@ -1,0 +1,70 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Location>
+
+@using GongChaWebApplication.Models;
+@{
+    ViewBag.Title = "Stock Usage For Locations";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+
+
+<h2>@(ViewBag.Title)</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Suburb)
+            </th>
+            <th></th>
+        </tr>
+        @if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+        {
+            @*<tr>
+                <td>
+                    @Html.ActionLink("All Locations", "List", new { LocationId = 0 }, new { @class = "btn btn-default btn-block" })
+                </td>
+                <td></td>
+                <td></td>
+            </tr>*@
+            <tr>
+                <td>
+                    @Html.ActionLink("Overall Usages For All Stores", "List", new { LocationId = -1 }, new { @class = "btn btn-default btn-block" })
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Name)*@
+                    @Html.ActionLink(item.Name, "List", new { LocationId = item.Id }, new { @class = "btn btn-default btn-default btn-block" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Suburb)
+                </td>
+                <td>
+
+                    @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

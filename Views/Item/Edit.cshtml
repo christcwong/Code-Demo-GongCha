@@ -1,0 +1,108 @@
+﻿@model GongChaWebApplication.Models.Item
+
+@{
+    ViewBag.Title = "Edit Item";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Item</legend>
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.LastModified)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Serial)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Serial)
+            @Html.ValidationMessageFor(model => model.Serial)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ChinName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ChinName)
+            @Html.ValidationMessageFor(model => model.ChinName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Specification)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Specification)
+            @Html.ValidationMessageFor(model => model.Specification)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.PackageUnitId)
+        </div>
+        <div class="display-field">
+            @Html.DropDownListFor(model => model.PackageUnitId, new SelectList(ViewBag.PackageUnits, "Id", "Symbol"), "Please choose an unit")
+            @Html.ValidationMessageFor(model => model.PackageUnitId)
+        </div>
+
+        <div class="editor-label">
+            @Html.Label("Volume")
+        </div>
+
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VolumeH)
+            @Html.EditorFor(model => model.VolumeW)
+            @Html.EditorFor(model => model.VolumeL)
+            <span class="styled-select">
+                @Html.DropDownListFor(model => model.VolumeUnitId, new SelectList(ViewBag.VolumeUnits, "Id", "Symbol"), "Please choose an unit")
+            </span>
+            @Html.ValidationMessageFor(model => model.VolumeW)
+            @Html.ValidationMessageFor(model => model.VolumeH)
+            @Html.ValidationMessageFor(model => model.VolumeL)
+            @Html.ValidationMessageFor(model => model.VolumeUnitId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.GrossWeight)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.GrossWeight)
+            @Html.DropDownListFor(model => model.GrossWeightUnitId, new SelectList(ViewBag.WeightUnits, "Id", "Symbol"), "Please Select Unit")
+            @Html.ValidationMessageFor(model => model.GrossWeight)
+            @Html.ValidationMessageFor(model => model.GrossWeightUnit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CBM)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CBM)
+            @Html.ValidationMessageFor(model => model.CBM)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

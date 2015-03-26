@@ -1,0 +1,45 @@
+﻿@model GongChaWebApplication.Models.CashOutflow
+
+@{
+    ViewBag.Title = "Cash Outflow";
+    ViewBag.Store = Session["CurrentStore"];
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h2 class="sub-header">@ViewBag.Store.Name Cash Outflow Details</h2>
+
+<fieldset>
+    <legend>Sales</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Date)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Type)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Type)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Outflow)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Outflow)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OutflowNote)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OutflowNote)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "EditCashOutflow", new { id=model.Id }) |
+    @Html.ActionLink("Back to List", "CashOutflowList", new { id=model.Store.Id })
+</p>

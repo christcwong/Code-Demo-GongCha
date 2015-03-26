@@ -1,0 +1,105 @@
+﻿@model GongChaWebApplication.Models.Item
+
+@{
+    ViewBag.Title = "Create Item";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Item</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Serial)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Serial, new { @class = "form-control", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.Serial)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ChinName)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.ChinName, new { @class = "form-control", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.ChinName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Specification)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Specification, new { @class = "form-control", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.Specification)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PackageUnit)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.PackageUnitId, new SelectList(ViewBag.PackageUnits, "Id", "Symbol"), "Please choose an unit", new { @class = "form-control", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.PackageUnitId)
+        </div>
+        <div class="editor-label">
+            @Html.Label("Volume")
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.VolumeH, new { @class="form-control",@style="display:inline-block;max-width:70px;"})
+            @Html.TextBoxFor(model => model.VolumeW, new { @class="form-control",@style="display:inline-block;max-width:70px;"})
+            @Html.TextBoxFor(model => model.VolumeL, new { @class="form-control",@style="display:inline-block;max-width:70px;"})
+            <span class="styled-select">
+                @Html.DropDownListFor(model => model.VolumeUnitId, new SelectList(ViewBag.VolumeUnits, "Id", "Symbol"), "Please choose an unit", new { @class = "form-control", @style = "display:inline-block;max-width:180px;" })
+            </span>
+            @Html.ValidationMessageFor(model => model.VolumeW)
+            @Html.ValidationMessageFor(model => model.VolumeH)
+            @Html.ValidationMessageFor(model => model.VolumeL)
+            @Html.ValidationMessageFor(model => model.VolumeUnitId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.GrossWeight)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.GrossWeight, new { @class = "form-control", @style = "display:inline-block;max-width:200px;" })
+            <span class="styled-select">
+                @Html.DropDownListFor(model => model.GrossWeightUnitId, new SelectList(ViewBag.WeightUnits, "Id", "Symbol"), "Please choose an unit", new { @class = "form-control", @style = "display:inline-block;max-width:200px;" })
+            </span>
+            @Html.ValidationMessageFor(model => model.GrossWeight)
+            @Html.ValidationMessageFor(model => model.GrossWeightUnitId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CBM)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CBM)
+            @Html.ValidationMessageFor(model => model.CBM)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

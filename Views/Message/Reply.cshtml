@@ -1,0 +1,26 @@
+﻿@model GongChaWebApplication.Models.MessageReplyViewModel
+
+@{
+    ViewBag.Title = "Reply";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+}
+
+<h2>Reply</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Message</legend>
+        <table class="table table-bordered">
+            @Html.DisplayFor(model => model.ParentMessage, "DisplayMessage")
+            @Html.EditorFor(model => model.NewMessage, "EditMessage")
+        </table>
+        <p>
+            <input type="submit" value="Reply" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+<p>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</p>

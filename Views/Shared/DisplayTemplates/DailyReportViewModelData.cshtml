@@ -1,0 +1,108 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.DailyReportViewModel.Data>
+
+<p>Select from @Model.Count() Sales</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Weather)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SalesAmount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Payout)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PayoutNote)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Difference)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ActualCash)
+                </th>
+                <th>
+                    @Html.DisplayNameFor( model => model.OutflowType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor( model => model.Outflow)
+                </th>
+                <th>
+                    Total Cash
+                </th>
+                <th>
+                    Submit By
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{double accumulativeActualCash = 0, accumulateCashOutflow = 0,totalCash=0;}
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                        @Html.DisplayFor(modelItem => item.Date.DayOfWeek)
+                    </td>
+                    <td>
+                        @if(item.Outflow==0){
+                            @Html.DisplayFor(modelItem => item.Weather)
+                        }
+                    </td>
+                    <td>
+                        @if(item.Outflow==0){
+                            @Html.DisplayFor(modelItem => item.SalesAmount)
+                        }
+                    </td>
+                    <td>
+                        @if(item.Outflow==0){
+                            @Html.DisplayFor(modelItem => item.Payout)
+                        }
+                    </td>
+                    <td>
+                        @if(item.Outflow==0){
+                            @Html.DisplayFor(modelItem => item.PayoutNote)
+                        }
+                    </td>
+                    <td>
+                        @if(item.Outflow==0){
+                            @Html.DisplayFor(modelItem => item.Difference)
+                        }
+                    </td>
+                    <td>
+                        @if(item.Outflow==0){
+                            accumulativeActualCash += item.ActualCash;
+                            @Html.DisplayFor(modelItem => item.ActualCash)
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OutflowType)
+                    </td>
+                    <td>
+                        @if(item.Outflow!=0){
+                            accumulateCashOutflow += item.Outflow;
+                            @String.Format("{0:c}", -item.Outflow);
+                        }
+                    </td>
+                    <td>
+                        @{totalCash = accumulativeActualCash - accumulateCashOutflow;}
+                        @String.Format("{0:c}",totalCash)
+                    </td>
+                    <td>
+                        @item.Member.Name
+                        @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "SalesDetail", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        @Html.HiddenFor(modelItem => item.Store.Id)*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

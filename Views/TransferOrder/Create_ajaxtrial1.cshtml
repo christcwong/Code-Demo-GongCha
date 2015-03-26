@@ -1,0 +1,265 @@
+﻿@model GongChaWebApplication.Models.TransferOrder
+@using MvcEnumDropDownList.Helpers
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+@*@Scripts.Render("~/bundles/jquery")*@
+
+<h2>Create</h2>
+
+@*@using (Ajax.BeginForm(
+        new AjaxOptions
+        {
+            HttpMethod = "get",
+            InsertionMode = InsertionMode.InsertAfter,
+            UpdateTargetId = "container"
+        }
+    )
+    )*@
+
+@using (Ajax.BeginForm("Create_AddNewItem", new AjaxOptions { UpdateTargetId = "DetailList",LoadingElementId="LoadingElementId" }))
+{
+    <fieldset>
+        <legend>TransferOrder</legend>
+        @Html.HiddenFor(model => model.NewOrder.Issuer)
+        @Html.HiddenFor(model => model.NewOrder.IssuerId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewOrder.SourceLocationId, "SourceLocation")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("SourceLocationId", String.Empty)
+            @Html.ValidationMessageFor(model => model.NewOrder.SourceLocationId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewOrder.DestinationLocationId, "DestinationLocation")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("DestinationLocationId", String.Empty)
+            @Html.ValidationMessageFor(model => model.NewOrder.DestinationLocationId)
+        </div>
+
+        @*<div class="editor-label">
+            @Html.LabelFor(model => model.IssuerId, "Issuer")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("IssuerId", String.Empty)
+            @Html.ValidationMessageFor(model => model.IssuerId)
+        </div>*@
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewOrder.IssueDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NewOrder.IssueDate)
+            @Html.ValidationMessageFor(model => model.NewOrder.IssueDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewOrder.EffectiveDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NewOrder.EffectiveDate)
+            @Html.ValidationMessageFor(model => model.NewOrder.EffectiveDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewOrder.StatusValue)
+        </div>
+        <div class="editor-field">
+            @*@Html.EditorFor(model => model.StatusValue)*@
+            @(Html.EnumDropDownListFor<GongChaWebApplication.Models.TransferOrder, GongChaWebApplication.Models.OrderStatus>(model => model.NewOrder.Status))
+            @Html.ValidationMessageFor(model => model.NewOrder.StatusValue)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewOrder.Note)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NewOrder.Note)
+            @Html.ValidationMessageFor(model => model.NewOrder.Note)
+        </div>
+
+        <p>
+            @*<input type="text" id="ItemLabelSelector" data-autocomplete="@Url.Action("AutoComplete", "Item")"/>*@
+            <input type="hidden" id="ItemId" />
+            <input type="submit" value="Add Item..." class="btn" />
+        </p>
+    </fieldset>
+}
+<div id="LoadingElementId" style="display:none;">Loading...</div>
+<div id="DetailList">
+    @Html.RenderPartial("TransferOrderDetailsTable", Model.Details);
+</div>
+@*<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>TransferOrder</legend>
+        @Html.HiddenFor(model => model.Issuer)
+        @Html.HiddenFor(model => model.IssuerId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SourceLocationId, "SourceLocation")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("SourceLocationId", String.Empty)
+            @Html.ValidationMessageFor(model => model.SourceLocationId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DestinationLocationId, "DestinationLocation")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("DestinationLocationId", String.Empty)
+            @Html.ValidationMessageFor(model => model.DestinationLocationId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IssuerId, "Issuer")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("IssuerId", String.Empty)
+            @Html.ValidationMessageFor(model => model.IssuerId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IssueDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IssueDate)
+            @Html.ValidationMessageFor(model => model.IssueDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EffectiveDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EffectiveDate)
+            @Html.ValidationMessageFor(model => model.EffectiveDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StatusValue)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StatusValue)
+            @(Html.EnumDropDownListFor<GongChaWebApplication.Models.TransferOrder, GongChaWebApplication.Models.OrderStatus>(model => model.Status))
+            @Html.ValidationMessageFor(model => model.StatusValue)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Note)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Note)
+            @Html.ValidationMessageFor(model => model.Note)
+        </div>
+
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Details)
+        </div>
+        <div class="editor-field">
+            <input type='text' id='Details_ItemSelector' placeholder="Enter Item Serial..."  name='Details.ItemSelector' data-autocomplete="@Url.Action("AutoComplete", "Item")"/>
+            <input type='hidden' id='Details_ItemId' name='Details.ItemId' />
+            <input type="button" id="btnAdd" value="Add Item..." class="btn" />
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Details, "TransferOrderDetailsTable")
+            @Html.ValidationMessageFor(model => model.Details)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" class="btn" />
+        </p>
+    </fieldset>
+}
+*@
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@*@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryui")*@
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryui")
+<script type="text/javascript">
+    $(function () {
+
+
+
+        var SrcLocationId;
+        var submitAutocompleteForm = function (event, ui) {
+            var $input = $(this);
+            $input.val(ui.item.label);
+
+            var $form = $input.parents("form:first");
+            $form.submit();
+        };
+
+        var fillInItemId = function (event, ui) {
+            var $input = $(this);
+            $input.val(ui.item.label);
+            var $id = ui.item.id;
+            var $form = $input.parents("p");
+            var $editor = $form.find("*[id*='ItemId']").first();
+            $editor.val($id);
+            @*
+            var $unitEditor = $form.find("*[id*='ItemId']").first();
+            var $unitDisplay = $form.find("*[id*='ItemQuantityUnit']").first();
+            $.getJSON("@Url.Action("Details", "Item")/" + $id, function (data) {
+                    //$unitEditor.val(data.PackageUnit.Symbol);
+                    $unitDisplay.html(data.PackageUnit.Symbol);
+                Details_@(ViewBag.RowId)__SrcStockAmount
+                    $.post("@Url.Action("GetLatestStock", "Stock")/?ItemId=" + $id + "&LocationId=" + SrcLocationId, function (stockData) {
+                        //alert(SrcLocationId);
+                        var $SrcStockAmountBox = $form.find("*[id*='SrcStockAmount']");
+                        $SrcStockAmountBox.html(stockData.Quantity + data.PackageUnit.Symbol);
+                    })
+                });
+            *@
+            }
+            
+            var createAutocomplete = function () {
+                var $input = $(this);
+                var options = {
+                    source: $input.attr("data-autocomplete"),
+                    select: fillInItemId,
+                    overflow: true
+                };
+                $input.autocomplete(options);
+            };
+            $("input[data-autocomplete]").each(createAutocomplete);
+
+            $("#btnAdd").click(function (e) {
+                var itemIndex = $("#container tr.ItemDetail").length;
+                e.preventDefault();
+                $.get("@Url.Action("NewTransferOrderDetail", "TransferOrder")/" + itemIndex, function (data) {
+                    $("#container").append(data);
+                    $("input[data-autocomplete]").each(createAutocomplete);
+                });
+            });
+
+            $("#SourceLocationId").change(function () {
+                SrcLocationId = $(this).val();
+            @*$.post("@Url.Action("SetSrcLocation", "TransferOrder")/?Id=" + SrcLocationId, function (data) {
+                //alert(SrcLocationId);
+            })*@
+            });
+
+            $("#container").on('click', 'input.btn-remove', function () {
+                var $tr = $(this).parents("tr");
+                $tr.remove();
+            });
+            
+        });
+</script>

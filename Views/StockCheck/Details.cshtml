@@ -1,0 +1,179 @@
+﻿@model GongChaWebApplication.Models.StockCheckViewModel
+
+@{
+    ViewBag.Title = "Stock Check List";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>Gong Cha Stock take @(Model.location.Address) for AU Date @GongChaWebApplication.Helpers.GongChaDateTimeWrapper.Now.Date.ToString("yyyy.MM.dd")</h2>
+
+Number of Date Before Expire Date Warning: @Html.TextBoxFor(model => model.alertDays, new { @class = "form-control textbox single-line", @style = "display:inline-block;max-width:70px;", @type = "number" })
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="4"></th>
+                <th colspan="@(Model.allPackageUnits.Count)" class="text-center">Amount
+                </th>
+                <th colspan="7"></th>
+            </tr>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.Item.Serial)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.Item.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.Item.ChinName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.Item.Specification)
+                </th>
+                @{foreach (GongChaWebApplication.Models.Unit unit in Model.allPackageUnits)
+                  {
+                    <th>
+                        @Html.Label(unit.Name + " (" + unit.ChinName + ")")
+                    </th>
+                  }
+                }
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.Item.GrossWeight)
+                </th>
+                <th colspan="3" align="center">
+                    @Html.DisplayName("Volume")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.Item.CBM)
+                </th>
+                <th>
+                    @Html.DisplayName("Total (kgs)")
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.dummyStock.ExpirationDate)
+                </th>
+            </tr>
+        </thead>
+        @foreach (var stock in Model.stocks)
+        {
+            <tr class="stocks">
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.Serial)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.ChinName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.Specification)
+                </td>
+                @foreach (GongChaWebApplication.Models.Unit unit in Model.allPackageUnits)
+                {
+                    <td>
+                        @if (stock.Item.PackageUnit.Symbol == unit.Symbol)
+                        {
+                            @Html.DisplayFor(modelItem => stock.Quantity)
+                            {
+                                List<GongChaWebApplication.Models.TransferOrderDetail> pendingChanges;
+                                if (Model.PendingChanges.TryGetValue(stock, out pendingChanges))
+                                {
+                                    foreach (var change in pendingChanges)
+                                    {
+                                        if (change.ParentOrder.DestinationLocationId == stock.LocationId)
+                                        {
+                            @Html.Raw("<span class=\"QuantityChange\" data-value=" + change.Id + ">")
+                            @(" +")
+                                        }
+                                        else
+                                        {
+                            @Html.Raw("<span class=\"PendingQuantityChange\" title=\"Pending Transfer Orders\">")
+                            @(" -")
+                                        }
+                            @Html.DisplayFor(modelItem => change.QuantityChange)
+                            @Html.Raw("</span>")
+                                    }
+                                }
+                            }
+                        }
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.GrossWeight)
+                    @Html.DisplayFor(modelItem => stock.Item.GrossWeightUnit.Symbol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.VolumeH)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.VolumeW)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.VolumeL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => stock.Item.CBM)
+                </td>
+                <td>
+                    @Html.Display("0.00")
+                </td>
+                <td class="ExpirationDate">
+                    @Html.DisplayFor(modelItem => stock.ExpirationDate)
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+@section Scripts{
+    @*    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")*@
+    <script type="text/javascript">
+
+
+
+        $(function () {
+            // Warning by toggle class.
+            function toggleAlerts() {
+                var $alertDays = $("#alertDays").val();
+                var $expirationDate = new Date($(this).find(".ExpirationDate").first().html());
+                var $dayBeforeExpiration = new Date().setTime($expirationDate.getTime() - $alertDays * 24 * 60 * 60 * 1000); // millisecond offset
+                if ($.now() > $dayBeforeExpiration) {
+                    $(this).addClass("danger")
+                } else {
+                    $(this).removeClass("danger")
+                }
+            }
+
+            $(".stocks").each(toggleAlerts);
+
+            $("#alertDays").change(function () {
+                $(".stocks").each(toggleAlerts);
+            });
+
+
+            // Transfer Order
+            $(".QuantityChange").tooltip({
+                html: true,
+                //trigger: 'manual',
+                delay: { show: 0, hide: 4000 },
+                title: function () {
+                    $changeId = $(this).attr("data-value");
+                    var acceptLink = "@Url.Action("Accept", "TransferOrder")" + "?TransferOrderDetailId=" + $changeId;
+                    var rejectLink = "@Url.Action("Reject", "TransferOrder")" + "?TransferOrderDetailId=" + $changeId;
+                    var tag = "<div>Pending Transfer Order</div><div>";
+                    tag += " <a href=\"" + acceptLink + "\">Accept</a>";
+                    tag += " <a href=\"" + rejectLink + "\">Reject</a>";
+                    tag += "</div>";
+                    return tag;
+                }
+            });
+            $(".PendingQuantityChange").tooltip();
+        });
+    </script>
+}

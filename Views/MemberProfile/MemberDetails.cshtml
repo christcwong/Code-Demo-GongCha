@@ -1,0 +1,86 @@
+﻿@using GongChaWebApplication.Models;
+@model IEnumerable<GongChaWebApplication.Models.MemberWageProfileViewModel>
+
+@{
+    ViewBag.Title = "Member Wage Profile Details";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+    var member = (Member)ViewBag.Member;
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@if (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER || CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+{
+    <p>
+        @*@Html.ActionLink("Create New", "Create")*@
+        <a class="btn btn-primary" href="@Url.Action("Create", new { id = member.Id })">Create New Wage Profile</a>
+    </p>
+}
+<div class="table-responsive">
+    <h3>@(member.Name)</h3>
+    <table class="table table-striped">
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Profile.Member.Name)
+            </th>*@
+            <th>
+                @*@Html.DisplayNameFor(model => model.Profile.BasedStore.Name)*@
+                Salary Profile For Store
+            </th>
+            @foreach (var type in new GongChaWebApplication.Models.GongChaDbContext().WageTypes)
+            {
+                <th>
+                    @Html.Raw(type.Name)
+                </th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.Profile.Description)
+            </th>
+            <th></th>
+        </tr>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+            <tr>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Profile.Member.Name)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Profile.BasedStore.Name)
+                </td>
+
+
+                @foreach (var wageBase in item.MemberWageBasis)
+                {
+                    <td>
+                        @Html.DisplayFor(modelitem => wageBase.WageBase)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Profile.Description)
+                </td>
+                <td>
+                    @if ((CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR) ||
+                    (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER))
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Profile.Id }, new { @class = "btn btn-default" })
+                    }
+                </td>
+            </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>No Wage Profile for This Member viewable.</td>
+            </tr>
+        }
+    </table>
+</div>
+@if ((CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR) ||
+                    (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER))
+{
+    @Html.ActionLink("Back To Store Member List", "List", new { StoreId = ViewBag.CurrentStoreId }, new { @class = "btn btn-default" })
+}

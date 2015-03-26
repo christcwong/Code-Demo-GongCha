@@ -1,0 +1,52 @@
+﻿@using GongChaWebApplication.Helpers;
+@model GongChaWebApplication.Models.ShiftEditViewModel
+
+@{
+    var row_id = Model.rowId.HasValue ? Model.rowId.Value : 0;
+    var shift_day_id = "m" + Model.Shift.MemberId + "d" + Model.Shift.StartHour.Year.ToString() + Model.Shift.StartHour.Month.ToString() + Model.Shift.StartHour.Day.ToString();
+    var id = "_" + shift_day_id + "_" + row_id;
+    
+}
+
+<tr class="ItemDetail" id="ItemDetail@(id)">
+    <td>
+        @Html.TextBox("EditModels[" + row_id + "].Shift.StartHour", Model.Shift.StartHour.ToString("HH:mm"),
+                new
+                {
+                    @class = "time start form-control",
+                    style = "width:90px"
+                })
+        @* ok I want to do is to have something for me to submit once the user clicked the submit button*@
+    </td>
+    <td>
+        @Html.TextBox("EditModels[" + row_id + "].Shift.EndHour", Model.Shift.EndHour.ToString("HH:mm"),
+            new
+            {
+                @class = "time end form-control",
+                style = "width:90px"
+            })
+    </td>
+    <td>
+        @Html.DropDownList("EditModels[" + row_id + "].Shift.BreakTime", new SelectList(ViewBag.BreakTimeItems, "value", "text", String.Empty),
+            new
+            {
+                @class = "form-control",
+                style = "width:120px"
+            })
+    </td>
+    <td>
+        @Html.TextBox("EditModels[" + row_id + "].Shift.TotalHour", Model.Shift.TotalHour, new { @class = " form-control", style = "width:60px" })
+    </td>
+    <td>
+        @*Hidden stuffss....*@
+        @Html.Hidden("EditModels[" + row_id + "].Shift.Id", Model.Shift.Id)
+        @Html.Hidden("EditModels[" + row_id + "].Shift.StoreId", Model.Shift.StoreId)
+        @Html.Hidden("EditModels[" + row_id + "].Shift.MemberId", Model.Shift.MemberId)
+        @Html.Hidden("EditModels[" + row_id + "].Shift.IssueDate", Model.Shift.IssueDate)
+        @Html.Hidden("EditModels[" + row_id + "].Shift.WageTypeId", Model.Shift.WageTypeId)
+        @Html.Hidden("EditModels[" + row_id + "].MarkDeleted", false, new { id = "shiftEditModel_MarkDeleted" })
+        @Html.Hidden("EditModels[" + row_id + "].Date", Model.Date.HasValue ? Model.Date.Value : GongChaDateTimeWrapper.Now)
+        <button type="button" class="close"><span aria-hidden="true">x</span></button>
+    </td>
+</tr>
+

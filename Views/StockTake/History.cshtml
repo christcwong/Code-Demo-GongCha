@@ -1,0 +1,111 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Stock>
+
+@{
+    ViewBag.Title = "Stock Histories";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+
+<div class="display-label">
+    @Html.LabelFor(model => model.First().Location)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.First().Location.Name)
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.LabelFor(model => model.First().Item.Name)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.First().Item.ChinName)
+            </th>
+            <th>@Html.LabelFor(model => model.First().State)</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.First().Item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.First().Item.ChinName)
+            </td>
+            <td>@Html.DisplayFor(model => model.First().State)</td>
+        </tr>
+    </table>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Checker)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            if (item.State == GongChaWebApplication.Models.StockState.PENDING)
+            {
+            @Html.Raw("<tr class=\"info\">")
+            @Html.Raw("<tr>")
+            <td>
+                @Html.ActionLink("Accept", "Accept", new { id = item.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Reject", "Reject", new { id = item.Id }, new { @class = "btn btn-default" })
+            </td>
+            }
+            else
+            {
+            @Html.Raw("<tr>")
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-default" })
+            </td>
+            };
+                
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+                @Html.DisplayFor(modelItem => item.Item.PackageUnit.Symbol)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Checker.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            @Html.Raw("</tr>")
+        }
+
+    </table>
+</div>
+<div>
+    @Html.ActionLink("Back to List", "List", new { Id = Model.First().LocationId }, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

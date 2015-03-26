@@ -1,0 +1,113 @@
+﻿@model GongChaWebApplication.Models.Sales
+
+@{
+    ViewBag.Title = "Create";
+    ViewBag.Store = Session["CurrentStore"];
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h1 class="page-header">@ViewBag.Store.Name Submit Today Sales</h1>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Please enter today sales information</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Date)
+        </div>
+        <div class="editor-field">
+            @Model.Date
+            @Html.HiddenFor(model => model.Date)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Weather)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.Weather, new { @class = "form-control" })
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.GeneralNote)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor( model => model.GeneralNote, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.GeneralNote)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SalesAmount)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.SalesAmount, new { @class = "form-control", type="number" })
+            @Html.ValidationMessageFor(model => model.SalesAmount)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CupSold)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.CupSold, new { @class = "form-control", type="number" })
+            @Html.ValidationMessageFor(model => model.CupSold)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Refund)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.Refund, new { @class = "form-control", type="number" })
+            @Html.ValidationMessageFor(model => model.Refund)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RefundNote)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor( model => model.RefundNote, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.RefundNote)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Payout)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.Payout, new { @class = "form-control", type="number" })
+            @Html.ValidationMessageFor(model => model.Payout)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PayoutNote)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor( model => model.PayoutNote, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.PayoutNote)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ActualCash)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.ActualCash, new { @class = "form-control", type="number", placeholder="Amount" })
+            @Html.ValidationMessageFor(model => model.ActualCash)
+        </div>
+
+        <br />
+
+        <p>
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "SalesList", new { id = @ViewBag.Store.Id })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

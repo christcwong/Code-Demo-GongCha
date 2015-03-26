@@ -1,0 +1,123 @@
+﻿@model List<GongChaWebApplication.Models.TransferOrderDetail>
+@{
+    ViewBag.StatusMessage = ViewBag.SrcLocation;
+}
+<div class="table-responsive">
+    <table id="container" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Item Serial
+                </th>
+                <th>Source Stock
+                </th>
+                <th>Quantity Transfering
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td>
+                    @using (Ajax.BeginForm("AddTransferOrderDetailToCurrent",
+                        new AjaxOptions
+                        {
+                            UpdateTargetId = "DetailList",
+                            LoadingElementId = "LoadingElementId"
+                        }
+                        ))
+                    {
+@*GongChaWebApplication.Models.TransferOrderDetail insertDetail = new GongChaWebApplication.Models.TransferOrderDetail();
+                        @Html.EditorFor(Model=>insertDetail.ItemId)
+                        
+                        @Html.EditorFor(modelItem=>modelItem.ItemId)
+                        *@
+                        <input type="submit" value="Add Item..." class="btn btn-default" />
+                    }
+                </td>
+            </tr>
+        </tfoot>
+        @if (Model.Count() == 0)
+        {
+            <tr class="ItemDetail">
+                <td colspan="4">No Item is added yet...</td>
+            </tr>
+        }
+        else
+        {
+@*
+            for(var i=0;i<Model.Items.Count;i++)
+            {
+                var item = Model.Items[i];
+                @Html.EditorFor(model => model.Items[i]);
+            }
+            *@
+        }
+    </table>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            var SrcLocationId;
+            var submitAutocompleteForm = function (event, ui) {
+                var $input = $(this);
+                $input.val(ui.item.label);
+
+                var $form = $input.parents("form:first");
+                $form.submit();
+            };
+
+            var fillInItemId = function (event, ui) {
+                var $input = $(this);
+                $input.val(ui.item.label);
+                var $id = ui.item.id;
+                var $form = $input.parents("tr");
+                var $editor = $form.find("*[id*='ItemId']").first();
+                $editor.val($id);
+                var $unitEditor = $form.find("*[id*='ItemId']").first();
+                var $unitDisplay = $form.find("*[id*='ItemQuantityUnit']").first();
+                $.getJSON("@Url.Action("Details", "Item")/" + $id, function (data) {
+                    //$unitEditor.val(data.PackageUnit.Symbol);
+                    $unitDisplay.html(data.PackageUnit.Symbol);
+                @*Details_@(ViewBag.RowId)__SrcStockAmount*@
+                    $.post("@Url.Action("GetLatestStock", "Stock")/?ItemId=" + $id + "&LocationId=" + SrcLocationId, function (stockData) {
+                        //alert(SrcLocationId);
+                        var $SrcStockAmountBox = $form.find("*[id*='SrcStockAmount']");
+                        $SrcStockAmountBox.html(stockData.Quantity + data.PackageUnit.Symbol);
+                    })
+                });
+            }
+
+            var createAutocomplete = function () {
+                var $input = $(this);
+                var options = {
+                    source: $input.attr("data-autocomplete"),
+                    select: fillInItemId
+                };
+                $input.autocomplete(options);
+            };
+            $("input[data-autocomplete]").each(createAutocomplete);
+
+            $("#btnAdd").click(function (e) {
+                var itemIndex = $("#container tr.ItemDetail").length;
+                e.preventDefault();
+                $.get("@Url.Action("NewTransferOrderDetail", "TransferOrder")/" + itemIndex, function (data) {
+                    $("#container").append(data);
+                    $("input[data-autocomplete]").each(createAutocomplete);
+                });
+            });
+
+            $("#SourceLocationId").change(function () {
+                SrcLocationId = $(this).val();
+            @*$.post("@Url.Action("SetSrcLocation", "TransferOrder")/?Id=" + SrcLocationId, function (data) {
+                //alert(SrcLocationId);
+            })*@
+            });
+
+            $("#container").on('click', 'input.btn-remove', function () {
+                var $tr = $(this).parents("tr");
+                $tr.remove();
+            });
+
+        });
+    </script>
+}

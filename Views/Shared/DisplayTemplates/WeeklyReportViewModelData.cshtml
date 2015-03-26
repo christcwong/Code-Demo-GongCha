@@ -1,0 +1,64 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.WeeklyReportViewModel.Data>
+
+<p>Select from @Model.Count() Weeks</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.WeekNumberOfYear)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Inflow)
+                </th>
+                <th>
+                    @Html.DisplayNameFor( model => model.WageOutflow)
+                </th>
+                 <th>
+                    @Html.DisplayNameFor( model => model.CashFlow)
+                </th>
+                <th>
+                    @Html.DisplayNameFor( model => model.AccumulativeCash)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{double totalCash=0;}
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WeekNumberOfYear)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Inflow)
+                    </td>
+                    <td>
+                        @Html.DisplayFor( modelItem => item.WageOutflow)
+                    </td>
+                    <td>
+                        @Html.DisplayFor( modelItem => item.CashFlow)
+                    </td>
+                    <td>
+                        @{totalCash += item.CashFlow;}
+                        @String.Format("{0:c}",totalCash)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

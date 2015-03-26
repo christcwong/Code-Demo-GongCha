@@ -1,0 +1,63 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Message>
+
+@{
+    ViewBag.Title = "Annoucements";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Writer.Name)
+            </th>
+            <th>
+                @Html.Label("Latest Edit Time")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>@Html.Label("Replies")</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Writer.Name)
+                </td>
+                <td>
+                    @Html.Raw(item.EditTime.HasValue ?
+                            (item.EditTime.Value < item.PostTime ? item.PostTime : item.EditTime.Value) :
+                            item.PostTime
+                        )
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.Raw(item.ChildMessages.Count())
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Reply", "Reply", "Message", new { id = item.Id }, new { }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

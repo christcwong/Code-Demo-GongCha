@@ -1,0 +1,42 @@
+﻿@model GongChaWebApplication.Models.WageType
+
+@{
+    ViewBag.Title = "Delete Wage Type";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>WageType</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+    <div class="display-label">
+        @Html.LabelFor(model => model.Color)
+    </div>
+    <div class="display-field">
+        <span  style="background-color:@(Model.Color)">
+            @Html.DisplayFor(model => model.Color)
+        </span>
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.targetMultiplier)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.targetMultiplier)
+    </div>
+</fieldset>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" class="btn btn-primary" />
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+    </p>
+}

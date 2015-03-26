@@ -1,0 +1,65 @@
+﻿@model GongChaWebApplication.Models.TransferOrderCreateViewModel
+@using MvcEnumDropDownList.Helpers
+@*@using (Html.BeginForm("SetBasicInfo","TransferOrder",FormMethod.Post)) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    *@@*<fieldset>
+        <legend>TransferOrder</legend>*@
+<div class="table-responsive">
+    @Html.HiddenFor(model => model.NewOrder.Issuer)
+    @Html.HiddenFor(model => model.NewOrder.IssuerId)
+    <table class="table table-striped">
+        <thead>
+            <th>
+                @Html.LabelFor(model => model.NewOrder.SourceLocationId, "SourceLocation")
+            </th>
+            <th>
+                @Html.LabelFor(model => model.NewOrder.DestinationLocationId, "DestinationLocation")
+            </th>
+            <th>
+                @Html.LabelFor(model => model.NewOrder.IssueDate)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.NewOrder.EffectiveDate)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.NewOrder.Status)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.NewOrder.Note)
+            </th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DropDownList("NewOrder.SourceLocationId", (SelectList)ViewBag.SourceLocationId, String.Empty, new { id = "NewOrder_SourceLocationId", name = "NewOrder.SourceLocationId", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewOrder.SourceLocationId)
+                </td>
+                <td>
+                    @Html.DropDownList("NewOrder.DestinationLocationId", (SelectList)ViewBag.DestinationLocationId, String.Empty, new { id = "NewOrder_DestinationLocationId", name = "NewOrder.DestinationLocationId", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewOrder.DestinationLocationId)
+                </td>
+                <td>
+                    @*@Html.EditorFor(model => model.NewOrder.IssueDate)*@
+                    @Html.TextBox("NewOrder.IssueDate", Model.NewOrder.IssueDate.ToString("yyyy-MM-dd"), new { @class = "form-control valid", @type = "date", @style = "max-width:400px;" })
+                    @Html.ValidationMessageFor(model => model.NewOrder.IssueDate)
+                </td>
+                <td>
+                    @*@Html.EditorFor(model => model.NewOrder.EffectiveDate)*@
+                    @Html.TextBox("NewOrder.EffectiveDate", Model.NewOrder.EffectiveDate.ToString("yyyy-MM-dd"), new { @class = "form-control valid", @type = "date", @style = "max-width:400px;" })
+                    @Html.ValidationMessageFor(model => model.NewOrder.EffectiveDate)
+                </td>
+                <td>
+                    @(Html.EnumDropDownListFor<GongChaWebApplication.Models.TransferOrderCreateViewModel, GongChaWebApplication.Models.OrderStatus>(model => model.NewOrder.Status, new { @class = "form-control" }))
+                    @Html.ValidationMessageFor(model => model.NewOrder.Status)
+
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.NewOrder.Note, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.NewOrder.Note)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

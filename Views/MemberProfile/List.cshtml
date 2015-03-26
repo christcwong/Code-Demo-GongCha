@@ -1,0 +1,50 @@
+﻿@using GongChaWebApplication.Models;
+@model IEnumerable<GongChaWebApplication.Models.Member>
+
+@{
+    ViewBag.Title = "Member Profiles For " + ((GongChaWebApplication.Models.Location)ViewBag.CurrentLocation).Name;
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@if (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER || CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+{
+    <p>
+        @*@Html.ActionLink("Create New", "Create")*@
+        <a class="btn btn-primary" href="@Url.Action("Create")">Create New Wage Profile</a>
+    </p>
+}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+
+            @*<th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>*@
+            <th>Staff @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>Home Store @Html.DisplayNameFor(model => model.Store.Name)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Name)*@
+                    @Html.ActionLink(item.Name, "MemberDetails", new { MemberId = item.Id }, new { @class = "btn btn-default btn-block" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Store.Name)
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+@if (CurrentMember.AccessLevel == GongChaWebApplication.Models.MemberAccessLevels.DIRECTOR)
+{
+    @Html.ActionLink("Back To Stores List", "Index")
+}

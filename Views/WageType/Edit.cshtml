@@ -1,0 +1,72 @@
+﻿@model GongChaWebApplication.Models.WageType
+
+@{
+    ViewBag.Title = "Edit Wage Type";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>WageType</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Color)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Color, new { @class = "colorPickerHolder" })
+            @Html.ValidationMessageFor(model => model.Color)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.targetMultiplier)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.targetMultiplier)
+            @Html.ValidationMessageFor(model => model.targetMultiplier)
+        </div>
+        <p>
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index",null, new { @class="btn btn-default"})
+</div>
+
+@section styles{
+    @Styles.Render("~/Content/bscolorpickersliders");
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bscolorpickersliders")
+    <script type="text/javascript">
+        $(function () {
+            $('input#Color').each(function () {
+                var selector = $(this);
+                $(this).ColorPickerSliders({
+                    color: $(this).attr("data-value"),
+                    placement:'right',
+                    flat: false,
+                    sliders: false,
+                    swatches: false,
+                    hsvpanel: true,
+                    previewformat: 'hex',
+                });
+            });
+        });
+    </script>
+}

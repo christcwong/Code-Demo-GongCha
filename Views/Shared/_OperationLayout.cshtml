@@ -1,0 +1,67 @@
+﻿@using GongChaWebApplication.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<String> PowerUserLevels = new List<String>() { "manager", "director" };
+    var CurrentMember = (Member)Session["CurrentMember"];
+    var CurrentAccessLevel = CurrentMember == null ? "" : CurrentMember.AccessLevel;
+}
+@section styles {
+    @RenderSection("styles", required: false)
+}
+<div class="col-md-2">
+    <div class="page-header hidden-xs">
+        <div>
+            Operation   
+            <ul class="nav nav-sidebar nav-pills nav-stacked">
+                @*<li class="active">@Html.ActionLink("Annoucement", "Index", "Annoucement")</li>*@
+                <li>@Html.ActionLink("Message Board", "Index", "Message")</li>
+            </ul>
+        </div>
+
+    </div>
+    @*Mobile Menu*@
+    <div class="page-header visible-xs">
+        <ul class="nav nav-sidebar nav-pills">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Shift Management<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li>@Html.ActionLink("Message Board", "Index", "Message")</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-md-10">
+    @RenderBody()
+</div>
+
+
+
+@section scripts {
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        /*menu handler*/
+        $(function () {
+            function stripTrailingSlash(str) {
+                if (str.substr(-1) == '/') {
+                    return str.substr(0, str.length - 1);
+                }
+                return str;
+            }
+
+            var url = window.location.pathname;
+            var activePage = stripTrailingSlash(url);
+
+            $('.nav li a').each(function () {
+                var activeController = "@Request.RequestContext.RouteData.Values["controller"].ToString()";
+                var currentPage = stripTrailingSlash($(this).attr('href'));
+                var currentController = currentPage.split("/")[1];
+                if (activeController == currentController) {
+                    $(this).parent().addClass('active');
+                }
+            });
+        });
+    </script>
+}

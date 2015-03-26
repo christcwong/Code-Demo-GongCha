@@ -1,0 +1,17 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Message>
+
+@{
+    ViewBag.Title = "View Message Thread";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        @foreach (var item in Model)
+        {
+            @Html.DisplayFor(modelItem => item, "DisplayMessage")
+        }
+    </table>
+</div>
+@Html.ActionLink("Reply", "Reply", new { Model.First().Id }, new { @class = "btn btn-primary" })

@@ -1,0 +1,70 @@
+﻿@model GongChaWebApplication.Models.Shift
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    List<String> PowerUserLevels = new List<String>() { "manager", "director" };
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Shift</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Store.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Store.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Memeber.Email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Memeber.Email)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.StartHour)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StartHour)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EndHour)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EndHour)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BreakTime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BreakTime)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.TotalHour)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TotalHour)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.WageType.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WageType.Name)
+    </div>
+</fieldset>
+<p>
+    @if (PowerUserLevels.Contains(((GongChaWebApplication.Models.Member)Session["CurrentMember"]).AccessLevel))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) @Html.Raw(" | ");
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

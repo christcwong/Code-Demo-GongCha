@@ -1,0 +1,87 @@
+﻿@model GongChaWebApplication.Models.Shift
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Shift</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StoreId, "Store")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("StoreId", String.Empty)
+            @Html.ValidationMessageFor(model => model.StoreId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MemberId, "Memeber")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("MemberId", String.Empty)
+            @Html.ValidationMessageFor(model => model.MemberId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StartHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StartHour)
+            @Html.ValidationMessageFor(model => model.StartHour)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EndHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EndHour)
+            @Html.ValidationMessageFor(model => model.EndHour)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BreakTime)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BreakTime)
+            @Html.ValidationMessageFor(model => model.BreakTime)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TotalHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TotalHour)
+            @Html.ValidationMessageFor(model => model.TotalHour)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.WageTypeId, "WageType")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("WageTypeId", String.Empty)
+            @Html.ValidationMessageFor(model => model.WageTypeId)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

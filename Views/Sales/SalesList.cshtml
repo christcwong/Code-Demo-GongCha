@@ -1,0 +1,14 @@
+﻿@model GongChaWebApplication.Models.SalesListViewModel
+
+@{
+    ViewBag.Store = Session["CurrentStore"];
+
+    ViewBag.Title = ViewBag.Store.Name + "Sales List";
+    //ViewData["SalesItems"] = model.SalesItems;
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+@using (Html.BeginForm())
+{
+    <h1 class="page-header">@ViewBag.Store.Name Sales Takings List</h1>
+    @Html.DisplayFor(model => model.SaleItems, "SalesItemsList")
+}

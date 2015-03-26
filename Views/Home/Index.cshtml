@@ -1,0 +1,35 @@
+﻿@model GongChaWebApplication.Models.MemberLoginViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<br />
+<h4>Please select following options: </h4>
+<div class="btn-group-vertical" style="width: 100%; max-width: 250px;">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a class="btn btn-default btn-lg" href="@Url.Action("Index", "Sales", null)" style="text-align: left;">Sales <span class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="btn btn-default btn-lg" href="@Url.Action("Index", "Roster", null)" style="text-align: left;">Roster <span class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="btn btn-default btn-lg" href="@Url.Action("Index", "Inventory", null)" style="text-align: left;">Inventory <span class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="btn btn-default btn-lg" href="@Url.Action("Index", "Operation", null)" style="text-align: left;">Operation <span class="glyphicon glyphicon-chevron-right"></span></a>
+        <a class="btn btn-default btn-lg" href="@Url.Action("Logout", "Member", null)" style="text-align: left;">Logout <span class="glyphicon glyphicon-chevron-right"></span></a>
+@*<a href="#" style="text-decoration: line-through;">Operation</a>*@
+    }
+    else
+    {
+        @Html.ActionLink("Login", "Login", "Member", null, new { @class = "btn btn-primary btn-lg", @role = "button" })
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <style>
+        .glyphicon-chevron-right {
+            float: right;
+        }
+    </style>
+}

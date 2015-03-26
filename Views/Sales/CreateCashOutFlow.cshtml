@@ -1,0 +1,87 @@
+﻿@model GongChaWebApplication.Models.CashOutflow
+
+@{
+    ViewBag.Title = "Create Cash OutFlow";
+    ViewBag.Store = Session["CurrentStore"];
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h2>Submit Cash OutFlow</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Please enter today sales information</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.Date, new { @class = "form-control", type="date" })
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Type)
+        </div>
+        <div class="editor-field">
+            @*@Html.EditorFor(model => model.Weather)*@
+            
+
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Wage",
+                    Value = "Wage"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Bank In",
+                    Value = "Bank In",
+                    Selected = true
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Dividend",
+                    Value = "Dividend"
+                });
+            }
+            @Html.ValidationMessageFor(model => model.Type)
+        </div>
+        @Html.DropDownListFor(model => model.Type, listItems, "-- Select Type --", new { @class = "form-control" })
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Outflow)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor( model => model.Outflow, new { @class = "form-control", type="number" })
+            @Html.ValidationMessageFor(model => model.Outflow)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OutflowNote)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor( model => model.OutflowNote, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.OutflowNote)
+        </div>
+
+        <br />
+
+        <p>
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "CashOutflowList", new { id = @ViewBag.Store.Id })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,55 @@
+﻿@model GongChaWebApplication.Models.MemberWageProfileViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    var CurrentMember = (GongChaWebApplication.Models.Member)ViewBag.CurrentMember;
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>MemberProfile</legend>
+    @Html.HiddenFor(model => model.Profile.Id)
+    <div class="display-label">
+        @Html.LabelFor(model => model.Profile.MemberId, "Member")
+    </div>
+    <div class="display-field">
+        @Html.HiddenFor(model => model.Profile.MemberId)
+        @Html.DisplayFor(model => model.Profile.Member.Name)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Profile.BasedStoreId, "BasedStore")
+    </div>
+    <div class="editor-field">
+        @Html.DisplayFor(model => model.Profile.BasedStore.Name)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Profile.Description)
+    </div>
+    <div class="editor-field">
+        @Html.DisplayFor(model => model.Profile.Description)
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Wage Base</legend>
+    @for (int i = 0; i < Model.MemberWageBasis.Count(); i++)
+    {
+        <div class="editor-label">
+            @Html.DisplayFor(modelitem => Model.MemberWageBasis[i].WageType.Name)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(modelitem => Model.MemberWageBasis[i].WageBase)
+        </div>    
+    }
+</fieldset>
+<p>
+    @if (CurrentMember.AccessLevel != GongChaWebApplication.Models.MemberAccessLevels.STAFF)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Profile.Id }) @Html.Raw(" | ")
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-2">
+    <div class="page-header">
+        <ul class="nav nav-sidebar nav-pills nav-stacked">
+                <li>
+                    @Html.ActionLink("Sales List Overview", "Index", "Sales")</li>
+            @if (((GongChaWebApplication.Models.Member)Session["CurrentMember"]).AccessLevel == "director")
+            {
+                <li class="hidden-xs">
+                    @Html.ActionLink("Sales Reports", "Report", "Sales")</li>
+                
+                <li class="hidden-xs">
+                    @Html.ActionLink("Cash Flow", "CashOutflow", "Sales")</li>
+                
+                <li class="dropdown visible-xs">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Submenu <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            @Html.ActionLink("Sales List Overview", "Index", "Sales")</li>
+                        <li>
+                            @Html.ActionLink("Sales Reports", "Report", "Sales")</li>
+                        <li>
+                            @Html.ActionLink("Cash Flow", "CashOutflow", "Sales")</li>
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+<div class="col-md-10">
+    @RenderBody()
+</div>
+
+
+@section scripts {
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        /*menu handler*/
+        $(function () {
+            function stripTrailingSlash(str) {
+                if (str.substr(-1) == '/') {
+                    return str.substr(0, str.length - 1);
+                }
+                return str;
+            }
+
+            var url = window.location.pathname;
+            var activePage = stripTrailingSlash(url);
+
+            $('.nav li a').each(function () {
+                @*var activeController = "@Request.RequestContext.RouteData.Values["controller"].ToString()";*@
+                var currentPage = stripTrailingSlash($(this).attr('href'));
+                //var currentController = currentPage.split("/")[1];
+                if (activePage == currentPage) {
+                    $(this).parent().addClass('active');
+                }
+            });
+        });
+    </script>
+}

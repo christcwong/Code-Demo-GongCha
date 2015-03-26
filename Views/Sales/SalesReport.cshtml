@@ -1,0 +1,142 @@
+﻿@model GongChaWebApplication.Models.SalesReportViewModel
+
+@{
+    ViewBag.Store = Session["CurrentStore"];
+    ViewBag.Title = ViewBag.Store.Name + "Sales List";
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h1 class="page-header">@ViewBag.Store.Name Sales Report</h1>
+<h3>Summary</h3>
+
+<div>
+    <table class="table table-condensed table-bordered">
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.TotalSalesAfterPayout)
+            </td>
+            <td>
+                @String.Format("{0:c}", @Model.TotalSalesAfterPayout) <span>since first record inserted</span>
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.TotalWage)</td>
+            <td>@String.Format("{0:c}", @Model.TotalWage)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.TotalCashReceived)</td>
+            <td>@String.Format("{0:c}", @Model.TotalCashReceived)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.TotalDeposit)</td>
+            <td>@String.Format("{0:c}", @Model.TotalDeposit) @Html.ActionLink("(click for details)", "CashOutflowList", new { id = Model.StoreID })</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.TotalDividend)</td>
+            <td>@String.Format("{0:c}", @Model.TotalDividend)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.TotalAccumulativeCash)</td>
+            <td>@String.Format("{0:c}", @Model.TotalAccumulativeCash)</td>
+        </tr>
+
+    </table>
+</div>
+
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.StoreID)
+    @Html.HiddenFor(m => m.FilterSelection)
+    <div>
+        <h4>
+            <span class="label label-default">Daily Reports :</span>
+            @Html.RadioButton("rangegrp", "d:w-1", true)
+            <span>Last Week Sales</span>
+            <span>&nbsp; | &nbsp; </span>
+            @Html.RadioButton("rangegrp", "d:m-1", false)
+            <span>Last Month Sales</span>
+            <span>&nbsp; | &nbsp; </span>
+            @Html.RadioButton("rangegrp", "d:other", false)
+
+            <span>Custom Range...</span>
+            <span id="spanDateSelection">
+                @Html.LabelFor(m => m.StartDate)
+                @Html.EditorFor(m => m.StartDate)
+                @Html.LabelFor(m => m.EndDate)
+                @Html.EditorFor(m => m.EndDate)
+            </span>
+
+        </h4>
+
+
+    </div>
+    
+    <div>
+        <h4>
+            <span class="label label-default">Weekly Reports :</span>
+
+            @Html.RadioButton("rangegrp", "w:all", false)
+            <span>All Sales</span>
+            <span>&nbsp; | &nbsp; </span>
+            @Html.RadioButton("rangegrp", "w:currentyear", false)
+            <span>Current Year Sales</span>
+            <span>&nbsp; | &nbsp; </span>
+            @Html.RadioButton("rangegrp", "w:lastyear", false)
+            <span>Last Year Sales</span>
+            <span>&nbsp; | &nbsp; </span>
+            @Html.RadioButton("rangegrp", "w:current", false)
+            <span>Current Quarter Sales</span>
+            <span>&nbsp; | &nbsp; </span>
+            @Html.RadioButton("rangegrp", "w:last", false)
+            <span>Last Quarter Sales</span>
+        </h4>
+    </div>
+    <p>
+        <input type="submit" value="Search" class="btn btn-primary " />
+    </p>
+    <br />
+    if (Model.dailyReportData != null && Model.dailyReportData.Any())
+    {
+    <h3>Daily Report Range : @Html.DisplayFor(model => model.StartDate) - @Html.DisplayFor(model => model.EndDate)</h3>
+    @Html.DisplayFor(m => m.dailyReportData, "DailyReportViewModelData")
+    }
+    if (Model.weeklyReportData != null && Model.weeklyReportData.Any())
+    {
+    <h3>Weekly Report Range : @Html.DisplayFor(model => model.StartDate) - @Html.DisplayFor(model => model.EndDate)</h3>
+    @Html.DisplayFor(m => m.weeklyReportData, "WeeklyReportViewModelData")
+    }
+}
+
+<script src="/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#spanDateSelection").hide();
+
+        //pre select the previous filter option
+        $(":radio[name=rangegrp][value='@Model.FilterSelection.ToString()']").attr('checked', true);
+        $("#FilterSelection")
+        if ($("#FilterSelection").val() == 'd:other') {
+            $("#spanDateSelection").show();
+        }
+        else {
+            $("#spanDateSelection").hide();
+        }
+
+        $(":radio[name=rangegrp]").change(function () {
+            //change the hidden field of filter selection
+            $("#FilterSelection").val($(this).val());
+            var value = $(this).val();
+            if (value == 'd:other') {
+                $("#spanDateSelection").show();
+            }
+            else {
+                $("#spanDateSelection").hide();
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,77 @@
+﻿@model GongChaWebApplication.Models.SalesTargetListCreateViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>SalesTarget</legend>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StoreId, "Store")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("StoreId", String.Empty)
+            @Html.ValidationMessageFor(model => model.StoreId)
+        </div>
+        @*<div class="editor-label">
+            @Html.LabelFor(model => model.Store)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.Store.Name)
+            @Html.HiddenFor(model => model.Store.Id)
+            @Html.ValidationMessageFor(model => model.Store)
+        </div>*@
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Date)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Date)
+            @Html.ValidationMessageFor(model => model.Date)
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.LabelFor(modelitem => new GongChaWebApplication.Models.WageType().Name)
+                    </th>
+                    <th>
+                        @Html.LabelFor(modelitem => new GongChaWebApplication.Models.SalesTarget().Target)
+                    </th>
+                </tr>
+            </thead>
+            @for (int i = 0; i < Model.SalesTargetsForWageType.Count(); i++)
+            {
+                var salesTarget = Model.SalesTargetsForWageType[i];
+                <tr>
+                    <td style="background-color:@(salesTarget.WageType.Color);">
+                        @Html.DisplayFor(modelitem => Model.SalesTargetsForWageType[i].WageType.Name)
+                        @Html.HiddenFor(modelitem => Model.SalesTargetsForWageType[i].WageTypeId)
+                    </td>
+                    <td>
+                        @Html.EditorFor(modelitem => Model.SalesTargetsForWageType[i].Target)
+                    </td>
+                </tr>
+            }
+        </table>
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

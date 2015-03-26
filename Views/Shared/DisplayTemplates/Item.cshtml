@@ -1,0 +1,28 @@
+﻿@model GongChaWebApplication.Models.Item
+
+<div class="table-responsive">
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        @Html.LabelFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.LabelFor(model => model.Item.Name)
+                    </th>
+                    <th>
+                        @Html.LabelFor(model => model.Item.ChinName)
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Item.ChinName)
+                    </td>
+                </tr>
+            </table>
+        </div>

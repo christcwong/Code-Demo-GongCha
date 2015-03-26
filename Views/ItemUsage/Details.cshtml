@@ -1,0 +1,79 @@
+﻿@model GongChaWebApplication.Models.StockHistory
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>StockHistory</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RecordTime)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RecordTime)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Location.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Location.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Item.Serial)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Item.Serial)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ExpirationDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExpirationDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StockBefore.Note)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StockBefore.Note)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StockAfter.Note)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StockAfter.Note)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ChangeQuantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ChangeQuantity)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AuthorizeMember.Email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AuthorizeMember.Email)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.typeValue)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.typeValue)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

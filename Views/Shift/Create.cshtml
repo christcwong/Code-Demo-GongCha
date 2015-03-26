@@ -1,0 +1,161 @@
+﻿@model GongChaWebApplication.Models.Shift
+@{
+    ViewBag.Title = "Create Shift";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Shift</legend>
+        @Html.HiddenFor(model => model.IssueDate)
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StoreId, "Store")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("StoreId", String.Empty)
+            @Html.ValidationMessageFor(model => model.StoreId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MemberId, "Memeber")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownGroupListFor(model => model.MemberId, (IEnumerable<GroupedSelectListItem>)ViewBag.MemberProfileData, "-- Select --", new
+       {
+           @data_val = "true",  // for Required Validation
+           @data_val_required = "The Name field is required." // for Required Validation
+       })
+            @*@Html.DropDownList("MemberId", String.Empty)*@
+            @Html.ValidationMessageFor(model => model.MemberId)
+        </div>
+
+        <div class="display-label">
+            @Html.Label("Unavailability of User")
+        </div>
+        <div class="display-field" id="unavailability-view-port">
+            Please Select Staff First.
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StartHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StartHour)
+            @Html.ValidationMessageFor(model => model.StartHour)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EndHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EndHour)
+            @Html.ValidationMessageFor(model => model.EndHour)
+        </div>
+
+
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BreakTime)
+        </div>
+        <div class="editor-field">
+            @*@Html.EditorFor(model => model.BreakTime)*@
+            @Html.DropDownList("BreakTime", String.Empty)
+            @Html.ValidationMessageFor(model => model.BreakTime)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TotalHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TotalHour)
+            @Html.ValidationMessageFor(model => model.TotalHour)
+        </div>
+
+        @*<div class="editor-label">
+            @Html.LabelFor(model => model.WageTypeId, "WageType")
+        </div>*@
+        <div class="editor-field">
+            @*@Html.DropDownList("WageTypeId", String.Empty)*@
+            @Html.HiddenFor(model => model.WageTypeId)
+            @Html.ValidationMessageFor(model => model.WageTypeId)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "List", new { LocationId = ViewBag.LocationId })
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/jquerydatetime")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jquerydatetime")
+    <script type="text/javascript">
+        function calculateTotalHour() {
+            var startHour = $('#StartHour').val();
+            var endHour = $('#EndHour').val();
+            var breakTime = $('#BreakTime').val();
+            var boolHasStartHour = startHour ? true : false;
+            var boolHasEndHour = endHour ? true : false;
+            var boolHasBreakTime = breakTime ? true : false;
+            if (boolHasStartHour && boolHasEndHour) {
+                var totalHour = $('#TotalHour');
+                totalHour.val(Math.abs(new Date(endHour) - new Date(startHour)) / 3.6e6 - breakTime);
+            }
+        };
+        function getUnavailabilities() {
+            var memberId = $('#MemberId').val();
+            $.post('@Url.Action("GetMemberUnavailabilities", "MemberUnavailability")/?MemberId=' + memberId, function (data) {
+                $('#unavailability-view-port').html(data);
+            });
+        }
+
+        $(function () {
+            $('#StartHour').datetimepicker({
+                //inline: true,
+                step: 30,
+                weeks: true,
+                dayOfWeekStart: 1,
+                onShow: function (ct) {
+                    var endHour = $('#EndHour').val();
+                    var endHourDate = new Date(endHour);
+                    var dateString = endHourDate.getFullYear().toString() + "/" + (endHourDate.getMonth() + 1) + "/" + endHourDate.getDate();
+                    this.setOptions({
+                        maxDate: endHour ? dateString : false,
+                    })
+                },
+                onChangeDateTime: calculateTotalHour
+            });
+            $('#EndHour').datetimepicker({
+                //inline: true,
+                step: 30,
+                weeks: true,
+                dayOfWeekStart: 1,
+                onShow: function (ct) {
+                    var startHour = $('#StartHour').val();
+                    var startHourDate = new Date(startHour);
+                    var dateString = startHourDate.getFullYear().toString() + "/" + (startHourDate.getMonth() + 1) + "/" + startHourDate.getDate();
+                    this.setOptions({
+                        minDate: startHour ? dateString : false,
+                    })
+                },
+                onChangeDateTime: calculateTotalHour
+            });
+            $('#BreakTime').change(calculateTotalHour);
+
+            $('#MemberId').change(getUnavailabilities);
+        });
+    </script>
+}

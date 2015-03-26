@@ -1,0 +1,85 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.CashOutflow>
+
+<p>
+    <a class="btn btn-primary" href="@Url.Action("CreateCashOutflow")">Create New Cash Outflow</a>
+</p>
+
+<p>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        List<SelectListItem> listItems = new List<SelectListItem>();
+        listItems.Add(new SelectListItem
+        {
+            Text = "All",
+            Value = "All",
+        });
+        listItems.Add(new SelectListItem
+        {
+            Text = "Wage",
+            Value = "Wage",
+        });
+        listItems.Add(new SelectListItem
+        {
+            Text = "Bank In",
+            Value = "Bank In"
+        });
+        listItems.Add(new SelectListItem
+        {
+            Text = "Dividend",
+            Value = "Dividend"
+        });
+    
+        <div class="input-group">
+            @Html.DropDownList("ddlSearchType", listItems, "-- Select Type --", new { @class = "form-control" })
+            <span class="input-group-btn">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </span>
+        </div>
+    }
+
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Type)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Outflow)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                        @Html.DisplayFor(modelItem => item.Date.DayOfWeek)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Outflow)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "EditCashOutFlow", new { id = item.Id }, new { @Class="btn btn-primary" }) @*|
+                        @Html.ActionLink("Details", "CashOutFlowDetail", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                        @Html.HiddenFor(modelItem => item.Store.Id)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,80 @@
+﻿@model GongChaWebApplication.Models.MemberUnavailability
+
+@{
+    ViewBag.Title = "Delete Member Unavailability";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>MemberUnavailability</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Memeber.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Memeber.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.IsWholeDay)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsWholeDay)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.StartHour)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StartHour)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EndHour)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EndHour)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.IsRecurrence)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsRecurrence)
+    </div>
+
+    @if (Model.IsRecurrence)
+    {
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.RecurrencePeriod)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.RecurrencePeriod)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.RecurrencePeriodUnit)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.RecurrencePeriodUnit)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.RecurrenceCount)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.RecurrenceCount)
+        </div>
+    }
+</fieldset>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" class="btn btn-primary" />
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+    </p>
+}

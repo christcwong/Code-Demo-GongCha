@@ -1,0 +1,105 @@
+﻿@using GongChaWebApplication.Models;
+@model IEnumerable<GongChaWebApplication.Models.Member>
+
+@{
+    ViewBag.Title = "Members";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    var PowerUsers = new List<string>() { MemberAccessLevels.DIRECTOR, MemberAccessLevels.MANAGER };
+    var CurrentUser = ((Member)ViewBag.CurrentUser);
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@if (PowerUsers.Contains(CurrentUser.AccessLevel))
+{
+    <p>
+        @*@Html.ActionLink("Create New", "Create")*@
+        <a class="btn btn-primary" href="@Url.Action("Create")">Create New Staff</a>
+
+    </p>
+}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            @if (PowerUsers.Contains(CurrentUser.AccessLevel))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AccessLevel)
+                </th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.LastLogin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Store)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JoinDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberState)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                @if (PowerUsers.Contains(CurrentUser.AccessLevel))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccessLevel)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastLogin)
+                </td>
+                <td>
+                    @if (item.Store != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Store.Name)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JoinDate)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.AuthCode)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberState)
+                </td>
+                <td>
+                    @if (PowerUsers.Contains(CurrentUser.AccessLevel) || CurrentUser.Id == item.Id)
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+                    @if (CurrentUser.AccessLevel == GongChaWebApplication.Models.MemberAccessLevels.DIRECTOR || CurrentUser.Id == item.Id)
+                    {
+                        @Html.ActionLink("Change Password", "ChangePassword", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+@*@Html.ActionLink("Details", "Details", new { id = item.Id })*@
+
+                    @if (PowerUsers.Contains(CurrentUser.AccessLevel) && item.stateValue == (int)GongChaWebApplication.Models.MemberState.ACTIVE)
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

@@ -1,0 +1,44 @@
+﻿@model GongChaWebApplication.Models.Unit
+
+@{
+    ViewBag.Title = "Unit Details";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<fieldset>
+    <legend>Unit</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ChinName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ChinName)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Symbol)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Symbol)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.unitType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.unitType)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</p>

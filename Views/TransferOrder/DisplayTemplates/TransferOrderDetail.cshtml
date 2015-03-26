@@ -1,0 +1,19 @@
+﻿@model GongChaWebApplication.Models.TransferOrderDetail
+@{
+    <tr>
+        <td>
+            @Html.DisplayFor(model => new GongChaWebApplication.Models.ItemViewModel(model.Item).Label)
+
+        </td>
+        <td>
+            @Html.DisplayFor(model=>model.SrcStockBefore.ExpirationDate)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.QuantityChange)
+            @Html.DisplayFor(model => model.Item.PackageUnit.Symbol)
+        </td>
+        <td>
+            @Html.DisplayFor(model=>model.Status)
+        </td>
+    </tr>
+}

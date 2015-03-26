@@ -1,0 +1,85 @@
+﻿@using GongChaWebApplication.Helpers;
+@model IEnumerable<GongChaWebApplication.Models.Stock>
+@{
+    var Dates = Model.Select(s => s.Date).Select(d => d.Date).Distinct().OrderByDescending(s => s.Date).ToList();
+    DateTime CurrentDate = (Dates.Any() ? Dates.Max().AddDays(1) : GongChaDateTimeWrapper.Now);
+}
+<div class="table-responsive">
+    <table class="table table-striped data-table">
+        <tr>
+            <th></th>
+            <th>Item @Html.DisplayNameFor(model => new GongChaWebApplication.Models.ItemViewModel(model.Item).Label)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>Location @Html.DisplayNameFor(model => model.Location.Name)</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Checker)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            while (Dates.Any() && item.Date.Date != CurrentDate.Date)
+            {
+                CurrentDate = Dates.First();
+                Dates = Dates.Skip(1).ToList();
+            @Html.Raw("<tr class=\"category info\"><td colspan=\"8\">" + CurrentDate.ToShortDateString() + "</td></tr>")
+            }
+            if (item.State == GongChaWebApplication.Models.StockState.PENDING)
+            {
+            @Html.Raw("<tr class=\"info\">")
+            @Html.Raw("<tr>")
+            <td>
+                @Html.ActionLink("Accept", "Accept", new { id = item.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Reject", "Reject", new { id = item.Id }, new { @class = "btn btn-default" })
+            </td>
+            }
+            else
+            {
+            @Html.Raw("<tr>")
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("History", "History", new { ItemId = item.ItemId, LocationId = ViewBag.Location.Id }, new { @class = "btn btn-default" })
+                @*| @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+            </td>
+            };
+            <td>
+                @Html.DisplayFor(modelItem => new GongChaWebApplication.Models.ItemViewModel(item.Item).Label)
+                @*@Html.DisplayFor(modelItem => item.Item.Serial)*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+                &nbsp;
+                    @Html.DisplayFor(modelItem => item.Item.PackageUnit.Symbol)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Checker.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            @Html.Raw("</tr>")
+        }
+
+    </table>
+</div>

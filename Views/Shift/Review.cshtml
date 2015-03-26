@@ -1,0 +1,79 @@
+﻿@model GongChaWebApplication.Models.Shift
+
+@{
+    ViewBag.Title = "Review";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>Review</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Shift</legend>
+        @Html.HiddenFor(model => model.Id)
+        <div class="display-label">
+            Store @Html.DisplayNameFor(model => model.Store.Name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Store.Name)
+        </div>
+
+        <div class="display-label">
+            Staff @Html.DisplayNameFor(model => model.Memeber.Name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Memeber.Name)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.StartHour)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.StartHour)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.EndHour)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.EndHour)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.BreakTime)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.BreakTime)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.TotalHour)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.TotalHour)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.WageType.Name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.WageType.Name)
+        </div>
+
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.IssueDate)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.IssueDate)
+        </div>
+
+        <p>
+            <input type="submit" value="Confirm" />
+        </p>
+    </fieldset>
+}
+<p>
+    @Html.ActionLink("Back to Index", "Index")
+</p>

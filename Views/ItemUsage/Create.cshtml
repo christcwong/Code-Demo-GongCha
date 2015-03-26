@@ -1,0 +1,101 @@
+﻿@model GongChaWebApplication.Models.StockHistory
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>StockHistory</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RecordTime)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RecordTime)
+            @Html.ValidationMessageFor(model => model.RecordTime)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LocationId, "Location")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("LocationId", String.Empty)
+            @Html.ValidationMessageFor(model => model.LocationId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ItemId, "Item")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("ItemId", String.Empty)
+            @Html.ValidationMessageFor(model => model.ItemId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ExpirationDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ExpirationDate)
+            @Html.ValidationMessageFor(model => model.ExpirationDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StockBeforeId, "StockBefore")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("StockBeforeId", String.Empty)
+            @Html.ValidationMessageFor(model => model.StockBeforeId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StockAfterId, "StockAfter")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("StockAfterId", String.Empty)
+            @Html.ValidationMessageFor(model => model.StockAfterId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ChangeQuantity)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ChangeQuantity)
+            @Html.ValidationMessageFor(model => model.ChangeQuantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AuthorizeMemberId, "AuthorizeMember")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("AuthorizeMemberId", String.Empty)
+            @Html.ValidationMessageFor(model => model.AuthorizeMemberId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.typeValue)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.typeValue)
+            @Html.ValidationMessageFor(model => model.typeValue)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

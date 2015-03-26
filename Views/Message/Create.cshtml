@@ -1,0 +1,33 @@
+﻿@model GongChaWebApplication.Models.Message
+
+@{
+    ViewBag.Title = "Create Message";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Message</legend>
+        <table class="table table-bordered">
+            @Html.EditorFor(model => model, "EditMessage")
+        </table>
+
+        <p>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

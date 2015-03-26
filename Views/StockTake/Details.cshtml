@@ -1,0 +1,58 @@
+﻿@model GongChaWebApplication.Models.Stock
+
+@{
+    ViewBag.Title = "Stock Details";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<fieldset>
+    <legend>Stock</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Date)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Quantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Quantity)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Item.Serial)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Item.Serial)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Location.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Location.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ExpirationDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExpirationDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Checker.Email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Checker.Email)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</p>

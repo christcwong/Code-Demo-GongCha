@@ -1,0 +1,68 @@
+﻿@model GongChaWebApplication.Models.MemberWageProfileViewModel
+
+@{
+    ViewBag.Title = "Edit Member Profile";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>MemberProfile</legend>
+        @Html.HiddenFor(model => model.Profile.Id)
+        <div class="display-label">
+            @Html.LabelFor(model => model.Profile.MemberId, "Member")
+        </div>
+        <div class="display-field">
+            @Html.HiddenFor(model => model.Profile.MemberId)
+            @Html.DisplayFor(model => model.Profile.Member.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Profile.BasedStoreId, "Based Store")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("Profile.BasedStoreId", (SelectList)ViewBag.BasedStoreId, String.Empty, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Profile.BasedStoreId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Profile.Description)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Profile.Description, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Profile.Description)
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Wage Base</legend>
+        @for (int i = 0; i < Model.MemberWageBasis.Count(); i++)
+        {
+            <div class="editor-label">
+                @Html.DisplayFor(modelitem => Model.MemberWageBasis[i].WageType.Name)
+            </div>
+            <div class="editor-field">
+                @Html.HiddenFor(modelitem => Model.MemberWageBasis[i].Id)
+                @Html.HiddenFor(modelitem => Model.MemberWageBasis[i].MemberProfileId)
+                @Html.HiddenFor(modelitem => Model.MemberWageBasis[i].WageTypeId)
+                @Html.TextBoxFor(modelitem => Model.MemberWageBasis[i].WageBase, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modelitem => Model.MemberWageBasis[i].WageBase)
+            </div>    
+        }
+    </fieldset>
+    <p>
+        <input type="submit" value="Edit" class="btn btn-primary" />
+    </p>}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

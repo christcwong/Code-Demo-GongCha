@@ -1,0 +1,170 @@
+﻿@model GongChaWebApplication.Models.StaffRangeShiftViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Week @(Model.WeekNumber) Gong Cha Date @(Model.WeekDays.Min().Date.ToShortDateString()) - @(Model.WeekDays.Max().Date.ToShortDateString())</h2>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <tbody>
+            @foreach (var weekDay in Model.WeekDays)
+            {
+                var shiftsForDay = Model.Shifts.Where(sh => sh.StartHour.Date == weekDay.Date);
+                
+                <tr>
+                    <td>
+                        @Html.Raw(weekDay.ToShortDateString())
+                        @Html.Raw(weekDay.DayOfWeek.ToString())
+                    </td>
+                    <td>
+                        @for (int i = 0; i < shiftsForDay.Count(); i++)
+                        {
+                            var shift = shiftsForDay.ToList()[i];
+                            @Html.DisplayFor(modelItem => shift.Store.Name)
+                            if (i < shiftsForDay.Count())
+                            {
+                            <br />
+                            }
+                        }
+                    </td>
+                    <td>
+                        @for (int i = 0; i < shiftsForDay.Count(); i++)
+                        {
+                            var shift = shiftsForDay.ToList()[i];
+                            @Html.DisplayFor(modelItem => shift.StartHour.TimeOfDay)
+                            @Html.Raw("&nbsp;-&nbsp;") 
+                            @Html.DisplayFor(modelItem => shift.EndHour.TimeOfDay)
+                            if (!shift.ReviewDate.HasValue)
+                            {
+                            @Html.Raw(" (Under&nbsp;Review)")
+                            }
+                            if (i < shiftsForDay.Count())
+                            {
+                            <br />
+                            }
+                        }
+                    </td>
+                    <td>
+                        @for (int i = 0; i < shiftsForDay.Count(); i++)
+                        {
+                            var shift = shiftsForDay.ToList()[i];
+                            @Html.DisplayFor(modelItem => shift.BreakTime)
+                            if (i < shiftsForDay.Count())
+                            {
+                            <br />
+                            }
+                        }
+                    </td>
+                    <td style="border-right: 2px solid black;">
+                        @for (int i = 0; i < shiftsForDay.Count(); i++)
+                        {
+                            var shift = shiftsForDay.ToList()[i];
+                            @Html.DisplayFor(modelItem => shift.TotalHour)
+                            if (i < shiftsForDay.Count())
+                            {
+                            <br />
+                            }
+                        }
+                    </td>
+                    @foreach (var wageType in Model.WageTypes)
+                    {
+                        var shiftsOfType = shiftsForDay.Where(s => s.WageTypeId == wageType.Id).ToList(); ;
+                        <td>
+                            @for (int i = 0; i < shiftsOfType.Count(); i++)
+                            {
+                                @Html.Raw("√")
+                                if (i < shiftsOfType.Count())
+                                {
+                                <br />
+                                }
+                            }
+                        </td>
+                    }
+                    <td style="border-left: 2px solid black;">
+                        @for (int i = 0; i < shiftsForDay.Count(); i++)
+                        {
+                            var shift = shiftsForDay.ToList()[i];
+                            if (shift.WageAmount.HasValue)
+                            {
+                            @Html.DisplayFor(modelItem => shift.WageAmount)
+                            }
+                            else
+                            {
+                            @Html.Raw("Not confirmed")
+                            }
+                            if (i < shiftsForDay.Count())
+                            {
+                            <br />
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <thead>
+            <tr>
+                <th colspan="5">
+                    @Html.DisplayFor(model => model.Member.Name)
+                </th>
+                <th colspan="@(Model.WageTypes.Count)">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                @foreach (var keyValuePair in Model.RatesForProfile)
+                                {
+                                    <td>@Html.DisplayFor(modelItem => keyValuePair.Key.BasedStore.Name)</td>
+                                }
+                            </tr>
+                            @foreach (var type in Model.WageTypes)
+                            {
+                                <tr style="background-color:@(type.Color);">
+                                    <td>@Html.DisplayFor(modelItem => type.Name)</td>
+                                    <td>:</td>
+                                    @foreach (var keyValuePair in Model.RatesForProfile)
+                                    {
+                                        <td>@Html.DisplayFor(modelItem => keyValuePair.Value.Where(r => r.WageTypeId == type.Id).FirstOrDefault().WageBase)</td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+            <tr>
+                <th>Week Day</th>
+                <th>Store</th>
+                <th>Time</th>
+                <th>@Html.DisplayNameFor(model => new GongChaWebApplication.Models.Shift().BreakTime)</th>
+                <th style="border-right: 2px solid black;">@Html.DisplayNameFor(model => new GongChaWebApplication.Models.Shift().TotalHour)</th>
+                @foreach (var wageType in Model.WageTypes)
+                {
+                    <th style="background-color:@(wageType.Color);">
+                        @Html.DisplayFor(modelItem => wageType.Name)
+                    </th>
+                }
+                <th style="border-left: 2px solid black;">Wage
+                </th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="5" style="border-right: 2px solid black;">Total Hour : @Html.Raw(Model.Shifts.Sum(sh => sh.TotalHour))
+                    @if (Model.Shifts.Any(s => s.ReviewDate == null))
+                    {
+                        @Html.Raw(" (Not Confirmed)")
+                    }
+                </td>
+                <td colspan="4">Wage : @Html.Raw(Model.Shifts.Sum(sh => sh.WageAmount))
+                    @if (Model.Shifts.Any(s => s.ReviewDate == null))
+                    {
+                        @Html.Raw(" (Not Confirmed)")
+                    }
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

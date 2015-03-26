@@ -1,0 +1,16 @@
+﻿@model GongChaWebApplication.Models.TransferOrderDetailCreateViewModel
+@using GongChaWebApplication.Helpers
+@{
+    ViewBag.Tick = "item" + GongChaDateTimeWrapper.Now.Ticks.ToString();
+}
+
+<tr class="transferOrderDetailCreateViewModel">
+    @Html.EditorFor(model => model.detail)
+    <td>
+        @Html.HiddenFor(model => model.markDelete, new { @class = "mark-for-delete" })
+        @Html.ValidationMessageFor(model => model.markDelete)
+        @*<input class="mark-for-delete" data-val="true" data-val-required="The markDelete field is required." id="Details_@(ViewBag.Tick)__markDelete" name="Details[@(ViewBag.Tick)].markDelete" type="hidden" value="False">
+        <span class="field-validation-valid" data-valmsg-for="Details[@(ViewBag.Tick)].markDelete" data-valmsg-replace="true"></span>*@
+        @Html.RemoveLink("Remove", "tr.transferOrderDetailCreateViewModel", "input.mark-for-delete")
+    </td>
+</tr>

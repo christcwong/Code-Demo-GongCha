@@ -1,0 +1,247 @@
+﻿@model GongChaWebApplication.Models.ShiftPeriodMemberDayViewModel
+
+@{
+
+    var id = "m" + Model.MemberId + "d" + Model.Date.Year + Model.Date.Month + Model.Date.Day;
+}
+
+<div>
+    <!-- Button trigger modal -->
+    <button class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-@(id)">
+        @if (Model.Shifts.Any())
+        {
+            foreach (var shiftEditModel in Model.Shifts)
+            {
+            <div>
+                @Html.Raw(shiftEditModel.Shift.StartHour.ToString("HH:mm"))
+                -
+                @Html.Raw(shiftEditModel.Shift.EndHour.ToString("HH:mm"))
+            </div>
+            }
+        }
+        else
+        {
+            <div>
+                Add...
+            </div>
+        }
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="modal-@(id)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Shifts</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form-@(id)">
+                        <table id="shift-table@(id)" class="table">
+                            <tbody>
+                                @foreach (var shiftEditModel in Model.Shifts)
+                                {
+                                    Html.RenderPartial("NewShiftEditViewModel", shiftEditModel);
+                                }
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => new GongChaWebApplication.Models.Shift().StartHour)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => new GongChaWebApplication.Models.Shift().EndHour)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => new GongChaWebApplication.Models.Shift().BreakTime)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => new GongChaWebApplication.Models.Shift().TotalHour)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" style="text-align: right;">
+                                        <span id="spinner-@(id)"></span>
+                                        <button id="btn-add-@(id)" class="btn">Add Shift</button>
+                                        <script type="text/javascript">
+
+                                            $("#btn-add-@(id)").click(function (e) {
+                                                e.preventDefault();
+                                                var spin_span = $("#spinner-@(id)");
+                                                    $.ajax({
+                                                        url: "@Url.Action("NewShiftEditModel")",
+                                                        type: "POST",
+                                                        data: "rowId=" + $("#shift-table@(id) tbody tr").length + "&memberId=@(Model.MemberId)&Date=@(Model.Date.ToString("s"))",
+                                                        beforeSend: function (e) {
+                                                            $("#btn-add-@(id)").attr("disabled", "disabled");
+                                                            $("#msg-box-@(id)").html('');
+                                                            spin_span.html('<img src="/Content/themes/base/images/spinner.gif" width = "30px" height="30px"/>');
+                                                        },
+                                                        complete: function () {
+                                                            $("#btn-add-@(id)").removeAttr('disabled');
+                                                            spin_span.html('');
+                                                        },
+                                                        success: function (xhr) {
+                                                            //alert(xhr);
+                                                            $("#shift-table@(id) tbody").append(xhr);
+                                                            $("#shift-table@(id) tbody tr[class^='ItemDetail']").each(function (index, element) {
+                                                                addShiftLayout(element);
+                                                            });
+                                                        },
+                                                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                                            alert("Error occuried.");
+                                                            $("#msg-box-@(id)").html(errorThrown);
+                                                        }
+                                                    });
+                                                });
+
+                                        </script>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </form>
+                    @if (Model.MemberUnavailabilities.Any())
+                    {
+                        <div class="display-label">
+                            Member is not available for the following time slot :   
+                        </div>
+                        if (Model.MemberUnavailabilities.Any(u => u.IsWholeDay == true))
+                        {
+                        <div class="display-field">
+                            Whole Day
+                        </div>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.MemberUnavailabilities)
+                            {
+                        <div class="display-field">
+                            @Html.Raw(item.StartHour.Value.ToString("HH:mm")) - @Html.Raw(item.EndHour.Value.ToString("HH:mm"))
+                        </div>
+                            }
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <div id="msg-box-@(id)"></div>
+                    <span id="alert-box-@(id)" style="display: none;">Member is not avaliable at the selected shift, please check again.<br />
+                    </span>
+                    <span id="submit-spinner-m@(Model.MemberId)d@(Model.Date.Year)@(Model.Date.Month)@(Model.Date.Day)"></span>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="btn-submit-@(id)" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*@Scripts.Render("~/bundles/jqueryval")*@
+@*@Scripts.Render("~/bundles/jquerytimepicker")*@
+<script type="text/javascript">
+
+    function checkUnavailable@(id)() {
+        if ($("#shift-table@(id) tbody tr").length == 0) {
+            alert("No Shift added");
+        } else {
+            //delcare array of unavailailities
+            @if (Model.MemberUnavailabilities.Any())
+            {
+                if (Model.MemberUnavailabilities.Any(u => u.IsWholeDay == true))
+                {
+                    <text>
+            alert("Member is not available for whole day.");
+            return false;
+                    </text>
+                }
+                else
+                {
+                    <text>
+            var arr = [];
+            var i = 0;
+                    </text>
+                    foreach (var item in Model.MemberUnavailabilities)
+                    {
+                        <text>
+            var unavailableStartHr = "@Html.Raw(item.StartHour.Value.ToString("HH:mm"))";
+            var unavailableEndHr = "@Html.Raw(item.EndHour.Value.ToString("HH:mm"))";
+            var dateunavailableStartHr = Date.parse('01/01/2011 ' + unavailableStartHr);
+            var dateunavailableEndHr = Date.parse('01/01/2011 ' + unavailableEndHr);
+            arr[i] = [];
+            arr[i][0] = dateunavailableStartHr;
+            arr[i][1] = dateunavailableEndHr;
+            i++;
+                        </text>
+                    }
+                    <text>
+            $("#alert-box-@(id)").hide();
+            //Check if Unavailability
+            for (var i = 0; i < $('#shift-table' + '@(id)' + ' tbody tr:visible').length; i++) {
+
+                var inputStartHr = $("#shift-table@(id) input#EditModels_" + i + "__Shift_StartHour").val();
+                var inputEndHr = $("#shift-table@(id) input#EditModels_" + i + "__Shift_EndHour").val();
+                var dateInputStartHr = Date.parse('01/01/2011 ' + inputStartHr);
+                var dateinputEndHr = Date.parse('01/01/2011 ' + inputEndHr);
+                if (dateinputEndHr < dateInputStartHr) {
+                    var tempdate = new Date(dateinputEndHr);
+                    tempdate.setDate(tempdate.getDate() + 1);
+                    dateinputEndHr = tempdate.valueOf();
+                }
+
+                for (var j = 0; j < arr.length; j++) {
+                    if (dateInputStartHr < arr[j][1] && arr[j][0] < dateinputEndHr) {
+                        $('#msg-box-' + '@(id)').html('Member is not available at the selected shift, please check again.');
+                        return false;
+                    }
+                }
+            }
+            </text>
+                }
+            }
+
+
+        }
+        return true;
+    }
+
+    $("#btn-submit-@(id)").click(function (e) {
+        e.preventDefault();
+        $("#msg-box-@(id)").html('');
+        if (checkUnavailable@(id)()) {
+            //var json_data = { "EditModels": [{ "Shift": {}, "MarkDeleted": "false" }] };
+            var form_data = $("#form-@(id)").serialize();
+            var spin_span = $("#submit-spinner-@(id)");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BatchEdit")",
+                data: form_data,
+                beforeSend: function () {
+                    $("#btn-submit-@(id)").attr("disabled", "disabled");
+                    spin_span.html('<img src="/Content/themes/base/images/spinner.gif" width = "30px" height="30px"/>');
+                },
+                complete: function () {
+                    if ($.trim($("#msg-box-@(id)").html()) != '') {
+                        $("#btn-submit-@(id)").attr("disabled", "disabled");
+                        $("#msg-box-@(id)").append("<br/>Please close the popup to reload the page");
+                    } else {
+                        $("#btn-submit-@(id)").removeAttr('disabled');
+                    }
+                    spin_span.html('');
+                },
+                success: function (xhr) {
+                    $("#msg-box-@(id)").html(xhr);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error occuried.");
+                    $("#shift-table@(id) tbody").html(errorThrown);
+                }
+            });
+        } else {
+
+        };
+    });
+
+
+    @*var itemDetail@(id)@(row_id) = document.getElementById("ItemDetail-@(id)-@(row_id)");*@
+
+</script>

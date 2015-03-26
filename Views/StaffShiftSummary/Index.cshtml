@@ -1,0 +1,41 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.MemberProfile>
+
+@{
+    ViewBag.Title = "Summary of Shifts for Staff";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Member.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member.AccessLevel)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Member.Name)*@
+                    @Html.ActionLink(item.Member.Name, "Details", new { id = item.Member.Id }, new { @class = "btn btn-default btn-block" })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Member.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Member.AccessLevel)
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

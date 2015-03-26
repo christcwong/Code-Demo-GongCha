@@ -1,0 +1,72 @@
+﻿@model GongChaWebApplication.Models.Member
+
+@{
+    ViewBag.Title = "Edit Member";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Member</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Email)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" ,@style="max-width:300px;"})
+            @Html.ValidationMessageFor(model => model.Email)
+        </div>
+
+        @*    <div class="editor-label">
+            @Html.LabelFor(model => model.Password)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Password)
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>*@
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" ,@style="max-width:300px;"})
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AccessLevel)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("AccessLevel", (SelectList)ViewBag.AccessLevel, String.Empty, new { @class = "form-control" ,@style="max-width:300px;"})
+            @Html.ValidationMessageFor(model => model.AccessLevel)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Store)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("Store_Id", (SelectList)ViewBag.Store_Id, String.Empty, new { @class = "form-control" ,@style="max-width:300px;"})
+            @Html.ValidationMessageFor(model => model.Store.Id)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

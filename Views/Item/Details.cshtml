@@ -1,0 +1,78 @@
+﻿@model GongChaWebApplication.Models.Item
+
+@{
+    ViewBag.Title = "Item Details";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<fieldset>
+    <legend>Item</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Serial)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Serial)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ChinName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ChinName)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Specification)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Specification)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PackageUnitId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PackageUnit.Symbol)
+    </div>
+    <div class="display-label">
+        Volume
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VolumeH)
+        x
+        @Html.DisplayFor(model => model.VolumeW)
+        x
+        @Html.DisplayFor(model => model.VolumeL)
+        &nbsp;
+        @Html.DisplayFor(model => model.VolumeUnit.Symbol)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.GrossWeight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GrossWeight)
+        &nbsp;
+        @Html.DisplayFor(model => model.GrossWeightUnit.Symbol)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.CBM)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CBM)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Back to List", "Index",null, new { @class = "btn btn-default" })
+</p>

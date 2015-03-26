@@ -1,0 +1,123 @@
+﻿@model GongChaWebApplication.Models.StoreRangeShiftViewModel
+
+@{
+    ViewBag.Title = "Details";
+    //Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    Dictionary<DateTime, double> weekDayHourTotal = new Dictionary<DateTime, double>();
+    foreach (var weekDay in Model.WeekDays)
+    {
+        weekDayHourTotal.Add(weekDay, 0);
+    }
+    double TotalHours = 0;
+    //double TotalWages = 0;
+}
+
+<h2>Week @(Model.WeekNumber) @(Model.Store.Name) Gong Cha Date @(Model.WeekDays.Min().Date.ToShortDateString()) - @(Model.WeekDays.Max().Date.ToShortDateString())</h2>
+<div class="table-responsive">
+    <table class="table table-bordered"@* style="border-collapse: initial;"*@>
+        <tbody style="border-top: 2px solid black;">
+            @foreach (var member in Model.Members)
+            {
+                var dictionary = Model.StaffShiftSummaries[member];
+                <tr>
+                    <td style="border-right: 2px solid black;">
+                        @Html.DisplayFor(modelItem => member.Name)
+                    </td>
+                    @foreach (var weekDay in Model.WeekDays)
+                    {
+                        var shiftsOfTheDay = dictionary.Shifts.Where(s => s.StartHour.Date == weekDay.Date).ToList();
+                        if (shiftsOfTheDay.Any())
+                        {
+                        <td>
+                            @Html.Raw(shiftsOfTheDay[0].StartHour.ToString("HH:mm")) - @Html.Raw(shiftsOfTheDay[0].EndHour.ToString("HH:mm"))
+                            @Html.Raw("(" + shiftsOfTheDay[0].BreakTime + ")")
+                            @for (int i = 1; i < shiftsOfTheDay.Count(); i++)
+                            {
+                                <br />
+                                @Html.Raw(shiftsOfTheDay[i].StartHour.ToString("HH:mm"))
+                                @Html.Raw(" - ") 
+                                @Html.Raw(shiftsOfTheDay[i].EndHour.ToString("HH:mm"))
+                                @Html.Raw("(" + shiftsOfTheDay[i].BreakTime + ")")
+                            }
+                        </td>
+                        }
+                        else
+                        {
+                        <td></td>
+                        }
+                    }
+
+                </tr>
+            }
+            @if (Model.BorrowedMembers.Any())
+            {
+                foreach (var member in Model.BorrowedMembers)
+                {
+                    var dictionary = Model.StaffShiftSummaries[member];
+                <tr>
+                    <td style="border-right: 2px solid black;">
+                        @Html.DisplayFor(modelItem => member.Name) @Html.Label(" * ")
+                    </td>
+                    @foreach (var weekDay in Model.WeekDays)
+                    {
+                        var shiftsOfTheDay = dictionary.Shifts.Where(s => s.StartHour.Date == weekDay.Date).ToList();
+                        if (shiftsOfTheDay.Any())
+                        {
+                        <td>
+                            @Html.Raw(shiftsOfTheDay[0].StartHour.ToString("HH:mm")) - @Html.Raw(shiftsOfTheDay[0].EndHour.ToString("HH:mm"))
+                            @Html.Raw("(" + shiftsOfTheDay[0].BreakTime + ")")
+                            @for (int i = 1; i < shiftsOfTheDay.Count(); i++)
+                            {
+                                <br />
+                                @Html.Raw(shiftsOfTheDay[i].StartHour.ToString("HH:mm"))
+                                @Html.Raw(" - ") 
+                                @Html.Raw(shiftsOfTheDay[i].EndHour.ToString("HH:mm"))
+                                @Html.Raw("(" + shiftsOfTheDay[i].BreakTime + ")")
+                            }
+                        </td>
+                        }
+                        else
+                        {
+                        <td></td>
+                        }
+                    }
+
+                </tr>
+                }
+            }
+        </tbody>
+        <thead>
+            <tr>
+                <td rowspan="2" style="border-right: 2px solid black; border-bottom: 2px solid black;">Week @(Model.WeekNumber) @(Model.Store.Name) GongCha</td>
+                @foreach (var weekDay in Model.WeekDays)
+                {
+                    <td>
+                        @Html.Label(weekDay.Date.ToShortDateString())
+                    </td>
+                }
+            </tr>
+            <tr style="border-bottom: 2px solid black;">
+                @foreach (var weekDay in Model.WeekDays)
+                {
+                    <td style="border-bottom: 2px solid black;">
+                        @Html.DisplayFor(modelItem => weekDay.DayOfWeek)
+                    </td>
+                }
+            </tr>
+        </thead>
+        <tfoot>
+            @if (Model.BorrowedMembers.Any())
+            {
+                <tr style="background-color: #fafafa;">
+                    <td colspan="@(Model.WeekDays.Count + 1)" >
+                        <div>
+                            @Html.Label("*") @Html.Raw(" - Indicate Borrowed Staff from other stores")
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tfoot>
+    </table>
+
+</div>

@@ -1,0 +1,99 @@
+﻿@model GongChaWebApplication.Models.Sales
+
+@{
+    ViewBag.Title = "SalesList";
+    ViewBag.Store = Session["CurrentStore"];
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h2 class="sub-header">@ViewBag.Store.Name Sales Details</h2>
+
+<fieldset>
+    <legend>Sales</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Date)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Weather)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Weather)
+    </div>
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GeneralNote)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GeneralNote)
+    </div>
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SalesAmount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SalesAmount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Refund)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Refund)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RefundNote)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RefundNote)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Payout)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Payout)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PayoutNote)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PayoutNote)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ExpectCash)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExpectCash)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ActualCash)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ActualCash)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Difference)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Difference)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "SalesList", new { id=Model.Store.Id })
+</p>

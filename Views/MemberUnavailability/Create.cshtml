@@ -1,0 +1,161 @@
+﻿@model GongChaWebApplication.Models.MemberUnavailability
+
+@{
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+    GongChaWebApplication.Models.Member member = ViewBag.Member;
+    ViewBag.Title = "Create Unavailable Time Slot for " + member.Name;
+}
+
+<h2>@(ViewBag.Title) </h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+                    
+    <fieldset>
+        <legend>MemberUnavailability</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MemberId, "Memeber")
+        </div>
+        <div class="editor-field">
+            @Html.Raw(member.Name)
+            @Html.Hidden("MemberId", ((int)ViewBag.MemberId).ToString())
+            @Html.ValidationMessageFor(model => model.MemberId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsWholeDay)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsWholeDay)
+            @Html.ValidationMessageFor(model => model.IsWholeDay)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StartHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StartHour)
+            @Html.ValidationMessageFor(model => model.StartHour)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EndHour)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EndHour)
+            @Html.ValidationMessageFor(model => model.EndHour)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsRecurrence)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsRecurrence)
+            @Html.ValidationMessageFor(model => model.IsRecurrence)
+        </div>
+
+        <div class="editor-label">
+            @Html.Label("Recurrence Interval")
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RecurrencePeriod)
+            @Html.DropDownList("RecurrencePeriodUnit", String.Empty)
+            @Html.ValidationMessageFor(model => model.RecurrencePeriod)
+            @Html.ValidationMessageFor(model => model.RecurrencePeriodUnit)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RecurrenceCount)
+        </div>
+        <div class="editor-field">
+            <div>(Please Input The Number of Recurrance.)</div>
+            <div>(e.g. for an unavailability that occur 3 times (2 EXTRA event) ,  enter 2.)</div>
+            @Html.EditorFor(model => model.RecurrenceCount)
+            @Html.ValidationMessageFor(model => model.RecurrenceCount)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/jquerydatetime")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jquerydatetime")
+    <script type="text/javascript">
+        function calculateTotalHour() {
+            var startHour = $('#StartHour').val();
+            var endHour = $('#EndHour').val();
+            var breakTime = $('#BreakTime').val();
+            var boolHasStartHour = startHour ? true : false;
+            var boolHasEndHour = endHour ? true : false;
+            var boolHasBreakTime = breakTime ? true : false;
+            if (boolHasStartHour && boolHasEndHour) {
+                var totalHour = $('#TotalHour');
+                totalHour.val(Math.abs(new Date(endHour) - new Date(startHour)) / 3.6e6 - breakTime);
+            }
+        };
+        $(function () {
+            $('#StartHour').datetimepicker({
+                //inline: true,
+                step: 30,
+                weeks: true,
+                dayOfWeekStart: 1,
+                onShow: function (ct) {
+                    // Check the end hour datetime picker value
+                    var endHour = $('#EndHour').val();
+                    var endHourDate = new Date(endHour);
+                    var dateString = endHourDate.getFullYear().toString() + "/" + (endHourDate.getMonth() + 1) + "/" + endHourDate.getDate();
+                    this.setOptions({
+                        maxDate: endHour ? dateString : false,
+                    });
+                    // if IsWholeDay is set, remove datetime picker.
+                    var isWholeDay = $("#IsWholeDay").is(':checked');
+                    this.setOptions({
+                        timepicker: !isWholeDay,
+                        defaultTime: (isWholeDay ? '00:00' : false)
+                    });
+
+
+                },
+                //onChangeDateTime: calculateTotalHour
+            });
+            $('#EndHour').datetimepicker({
+                //inline: true,
+                step: 30,
+                weeks: true,
+                dayOfWeekStart: 1,
+                onShow: function (ct) {
+                    // Check the end hour datetime picker value
+                    var startHour = $('#StartHour').val();
+                    var startHourDate = new Date(startHour);
+                    var dateString = startHourDate.getFullYear().toString() + "/" + (startHourDate.getMonth() + 1) + "/" + startHourDate.getDate();
+                    this.setOptions({
+                        minDate: startHour ? dateString : false,
+                    });
+                    // if IsWholeDay is set, remove datetime picker.
+                    var isWholeDay = $("#IsWholeDay").is(':checked');
+                    this.setOptions({
+                        timepicker: !isWholeDay,
+                        defaultTime: (isWholeDay ? '23:59' : false)
+                    });
+                },
+                //onChangeDateTime: calculateTotalHour
+            });
+            //$('#BreakTime').change(calculateTotalHour);
+        });
+    </script>
+}

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.SalesTarget>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h2>Sales Target List For Store @(ViewBag.Store.Name)</h2>
+@if (((GongChaWebApplication.Models.Member)ViewBag.CurrentMember).AccessLevel == "manager" || ((GongChaWebApplication.Models.Member)ViewBag.CurrentMember).AccessLevel == "director")
+{
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+    <p>
+        @Html.ActionLink("Create New", "ListCreate")
+    </p>
+}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                    <td>@Html.DisplayFor(modelItem => item.WageType.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Target)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Note)</td>
+                    <td>
+                        @if (((GongChaWebApplication.Models.Member)ViewBag.CurrentMember).AccessLevel == "manager"
+                        || ((GongChaWebApplication.Models.Member)ViewBag.CurrentMember).AccessLevel == "director")
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) @Html.Raw(" | ")
+                        }
+                        @Html.ActionLink("Details", "Details", new { id = item.Id })
+                        @if (((GongChaWebApplication.Models.Member)ViewBag.CurrentMember).AccessLevel == "manager"
+                        || ((GongChaWebApplication.Models.Member)ViewBag.CurrentMember).AccessLevel == "director")
+                        {
+                            @Html.Raw(" | ")
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Date)</th>
+                <th>@Html.DisplayNameFor(model => model.WageType)</th>
+                <th>@Html.DisplayNameFor(model => model.Target)</th>
+                <th>@Html.DisplayNameFor(model => model.Note)</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>

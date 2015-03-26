@@ -1,0 +1,34 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Member>
+
+@{
+    ViewBag.Title = "Unavailability Profiles for " + ViewBag.Store.Name;
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.AccessLevel)
+            </th>*@
+            @*<th></th>*@
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.Name, "ListMember", new { id = item.Id }, new { @class = "btn btn-default btn-block" })
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.AccessLevel)
+                </td>*@
+            </tr>
+        }
+    </table>
+    @Html.ActionLink("Back to Store List", "Index", null, new { @class = "btn btn-default" })
+</div>

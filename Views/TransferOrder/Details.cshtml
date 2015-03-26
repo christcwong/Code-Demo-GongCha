@@ -1,0 +1,103 @@
+﻿@using GongChaWebApplication.Models;
+@model GongChaWebApplication.Models.TransferOrder
+
+@{
+    ViewBag.Title = "Transfer Order Details";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var CurrentMember = (Member)Session["CurrentMember"];
+}
+
+<h2>@(ViewBag.Title)</h2>
+<div class="table-responsive">
+    @*@Html.HiddenFor(model => model.Issuer)*@
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.IssuerId)
+    @Html.HiddenFor(model => model.LastModified)
+    <table class="table table-striped">
+        <thead>
+            <th>
+                @Html.LabelFor(model => model.SourceLocationId, "SourceLocation")
+            </th>
+            <th>
+                @Html.LabelFor(model => model.DestinationLocationId, "DestinationLocation")
+            </th>
+            <th>
+                @Html.LabelFor(Model => Model.Issuer)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.IssueDate)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.EffectiveDate)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.Status)
+            </th>
+            <th>
+                @Html.LabelFor(model => model.Note)
+            </th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @*@Html.DropDownList("NewOrder.SourceLocationId", (SelectList)ViewBag.SourceLocationId, String.Empty, new { id = "NewOrder_SourceLocationId", name = "NewOrder.SourceLocationId" })*@
+                    @Html.HiddenFor(model => model.SourceLocationId)
+                    @Html.DisplayFor(model => model.SourceLocation.Name)
+                </td>
+                <td>
+                    @*@Html.DropDownList("NewOrder.DestinationLocationId", (SelectList)ViewBag.DestinationLocationId, String.Empty, new { id = "NewOrder_DestinationLocationId", name = "NewOrder.DestinationLocationId" })*@
+                    @Html.HiddenFor(model => model.DestinationLocationId)
+                    @Html.DisplayFor(model => model.DestinationLocation.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(Model => Model.Issuer.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.IssueDate)
+                    @Html.HiddenFor(model => model.IssueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.EffectiveDate)
+                    @Html.ValidationMessageFor(model => model.EffectiveDate)
+                </td>
+                <td>
+                    @*@(Html.EnumDropDownListFor<GongChaWebApplication.Models.TransferOrderCreateViewModel, GongChaWebApplication.Models.OrderStatus>(model => model.Status))*@
+                    @Html.DisplayFor(model => model.Status)
+                    @Html.ValidationMessageFor(model => model.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.Note)
+                    @Html.ValidationMessageFor(model => model.Note)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="table-responsive">
+    <table id="DetailTable" class="table">
+        <thead>
+            <tr>
+                <th>Item Serial
+                </th>
+                <th>Expiration Date
+                </th>
+                <th>Quantitiy To Destination
+                </th>
+                <th>Status
+                </th>
+            </tr>
+        </thead>
+        @for (int i = 0; i < Model.Details.Count; i++)
+        {
+            @Html.DisplayFor(model => model.Details[i])
+        }
+    </table>
+</div>
+<p>
+    @if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR || CurrentMember.AccessLevel == MemberAccessLevels.WAREHOUSE_MANAGER)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+    }
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</p>

@@ -1,0 +1,21 @@
+﻿@model GongChaWebApplication.Models.Message
+
+@using GongChaWebApplication.Models;
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+
+<h2>Details</h2>
+<table class="table table-bordered">
+    @Html.DisplayFor(model => model, "DisplayMessage")
+</table>
+<p>
+    @if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR || Model.WriterId == CurrentMember.Id)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) @Html.Raw(" | ")
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>

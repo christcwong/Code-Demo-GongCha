@@ -1,0 +1,80 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.MemberUnavailability>
+
+@{
+    ViewBag.Title = "Unavailablity of Member " + ((GongChaWebApplication.Models.Member)ViewBag.Member).Name;
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<p>
+    @Html.ActionLink("Create New Record", "Create", new { MemberId = ((GongChaWebApplication.Models.Member)ViewBag.Member).Id }, new { @class = "btn btn-primary" })
+    @*<a class="btn btn-primary" href="@Url.Action("Create", new { MemberId = ((GongChaWebApplication.Models.Member)ViewBag.Member).Id })">Create New</a>*@
+</p>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Memeber.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsWholeDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartHour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndHour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsRecurrence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecurrencePeriod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecurrencePeriodUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecurrenceCount)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Memeber.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsWholeDay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartHour)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndHour)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsRecurrence)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecurrencePeriod)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecurrencePeriodUnit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecurrenceCount)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-default" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

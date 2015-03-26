@@ -1,0 +1,163 @@
+﻿@model GongChaWebApplication.Models.TransferOrderCreateViewModel
+@using MvcEnumDropDownList.Helpers
+
+@{
+    ViewBag.Title = "Edit Transfer Order";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="Info">
+        @{Html.RenderPartial("_EditInfo", Model);}
+    </div>
+    
+    <div class="table-responsive">
+        <table id="DetailTable" class="table">
+            <thead>
+                <tr>
+                    <th>Item Serial
+                    </th>
+                    <th>Quantity of Item of Expiration Date
+                    </th>
+                    <th>Quantity to Transfer
+                    </th>
+                    <th>Unit
+                    </th>
+                    <th>Current Total Stock At Destination
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            @for (int i = 0; i < Model.Details.Count; i++)
+            {
+                @Html.EditorFor(model => model.Details[i])
+            }
+            <tfoot>
+                <tr>
+                    <td>
+                        <a href="#" type="button" id="addBtn" class="btn btn-default">Add New Item...</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <p>
+        <button type="submit" class="btn btn-primary">Finished Editing</button>
+    </p>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/date.js")
+    <script type="text/javascript">
+        var SrcLocationId;
+        var DstLocationId;
+        var removeNestedForm = function (element, container, deleteElement) {
+            $container = $(element).parents(container);
+            $container.find(deleteElement).val('True');
+            $container.hide();
+        }
+        var addNestedForm = function (container, counter, ticks) {
+            var nextIndex = $(counter).length;
+            var idPattern = new RegExp("id=\"", "gi");
+            var namePattern = new RegExp("name=\"", "gi");
+            $.get("@Url.Action("NewTransferOrderDetail", "TransferOrder")/" + nextIndex, function (data) {
+                content = data.replace(idPattern, "id=\"Details_" + nextIndex + "__")
+                                .replace(namePattern, "name=\"Details[" + nextIndex + "].");
+                $(container).append(content);
+                $("input[data-autocomplete]").each(createAutocomplete);
+            });
+        };
+        var fillInItemId = function (event, ui) {
+            var $input = $(this);
+            $input.val(ui.item.label);
+            var $id = ui.item.id;
+            var $row = $input.parents("tr");
+            var $editor = $row.find("*[id*='ItemId']").first();
+            $editor.val($id);
+            var $unitEditor = $row.find("*[id*='ItemId']").first();
+            var $unitDisplay = $row.find(".ItemQuantityUnit").first();
+            var $stockSelect = $row.find(".SrcStockBeforeSelect").first();
+            $.getJSON("@Url.Action("Details", "Item")/" + $id, function (data) {
+                $unitDisplay.html(data.PackageUnit.Symbol);
+
+            });
+            $.post("@Url.Action("GetLatestStocks", "Stock")/?ItemId=" + $id + "&LocationId=" + SrcLocationId, function (stockData) {
+                //alert(SrcLocationId);
+                var $SrcStockAmountBox = $row.find(".SrcStockAmount").first();
+                var $SrcStockBefore = $row.find(".SrcStockBefore").first();
+                var $SrcIdEditor = $row.find("*[id*='SrcStockBeforeId']").first();
+                $SrcStockAmountBox.html(stockData.Quantity);
+                $stockSelect.html("");
+                $stockSelect.append('<option value="" >Select a stock...</option>');
+                $.each(stockData, function (ind) {
+                    var ExpirationDates = new Date(parseInt(stockData[ind].ExpirationDate.substr(6)));
+                    $stockSelect.append('<option value=' + stockData[ind].Id + '>' + ExpirationDates.toString('yyyy-MM-dd') + " - " + stockData[ind].Quantity + " " + stockData[ind].Item.PackageUnit.Symbol + '</option>');
+                });
+            });
+            $.post("@Url.Action("GetLatestStocks", "Stock")/?ItemId=" + $id + "&LocationId=" + DstLocationId, function (stockData) {
+                //alert(SrcLocationId);
+                var $sum = 0;
+                var $unit = "";
+                $.each(stockData, function (ind) {
+                    $sum += stockData[ind].Quantity;
+                    if ($unit != "") {
+                        $unit = stockData[ind].Item.PackageUnit.Symbol;
+                    }
+                });
+                var $DstStockAmountBox = $row.find(".DstStockAmount").first();
+                var $DstStockBefore = $row.find(".DstStockBefore").first();
+                $DstStockAmountBox.html($sum + " " + $unit);
+                //$DstStockBefore.val(stockData.Id);
+            });
+        }
+        var createAutocomplete = function () {
+            var $input = $(this);
+            var options = {
+                source: $input.attr("data-autocomplete"),
+                select: fillInItemId
+            };
+            $input.autocomplete(options);
+        };
+        $(function () {
+            SrcLocationId = $('#NewOrder_SourceLocationId').val();
+            $("#NewOrder_SourceLocationId").change(function () {
+                SrcLocationId = $(this).val();
+            });
+            DstLocationId = $('#NewOrder_DestinationLocationId').val();
+            $("#NewOrder_DestinationLocationId").change(function () {
+                DstLocationId = $(this).val();
+            });
+
+            // Notice the Below Hidden Input was used to fix the Bug of DropDownList not showing selected value with jquery
+            var $OriginalStatusValue = $("#OriginalStatusValue").val();
+            $("#NewOrder_Status").val($OriginalStatusValue);
+
+            $('#addBtn').click(function (e) {
+                e.preventDefault();
+                addNestedForm('#DetailTable tbody', 'tr.transferOrderDetailCreateViewModel', 'input.mark-for-delete');
+            });
+
+
+            $("input[data-autocomplete]").each(createAutocomplete);
+            //$("#DetailTable").on("load", "input[data-autocomplete]", createAutocomplete);
+
+            $("#DetailTable").on("change", ".SrcStockBeforeSelect", function () {
+                var $row = $(this).parents("tr");
+                var $SrcIdEditor = $row.find("*[id*='SrcStockBeforeId']").first();
+                $SrcIdEditor.val($(this).val());
+            });
+        });
+    </script>
+}

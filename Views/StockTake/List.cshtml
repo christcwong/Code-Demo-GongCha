@@ -1,0 +1,35 @@
+﻿@model GongChaWebApplication.Models.StockTakeListViewModel
+
+@{
+    ViewBag.Title = "Stock Take History for " + ViewBag.Location.Name;
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+
+
+<h2>Pending Transfer Order(s) for @ViewBag.Location.Name</h2>
+@{Html.RenderPartial("_ListPendingTransferOrderDetails", Model.PendingTransferOrderDetails);}
+
+<h2>Stock Take Histories for @ViewBag.Location.Name</h2>
+@*<p>
+    @Html.ActionLink("New Stock Check", "Create",null, new { @class = "btn btn-default" })
+</p>*@
+<p>
+    @Html.ActionLink("New Stock Take By Item List", "ListCreate", null, new { @class = "btn btn-primary" })
+</p>
+
+@{Html.RenderPartial("_ListStocks", Model.Stocks);}
+
+@*
+obsolected because of ui does not render as expected for table
+@section styles{
+    @Styles.Render("~/Content/themes/base/css");
+}
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        $(".data-table").each(function () {
+            $(this).accordion({ header: ".category", });
+        });
+    </script>
+}*@

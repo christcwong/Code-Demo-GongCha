@@ -1,0 +1,126 @@
+﻿@model GongChaWebApplication.Models.Stock
+@using MvcEnumDropDownList.Helpers
+
+@{
+    ViewBag.Title = "Edit Stock";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Stock</legend>
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.LastModified)
+        @Html.HiddenFor(model => model.ItemId)
+        @Html.HiddenFor(model => model.LocationId)
+        @Html.HiddenFor(model => model.MemberId)
+        @Html.HiddenFor(model => model.Date)
+        @Html.HiddenFor(model => model.ExpirationDate)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Location)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.Location.Name)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ItemId, "Item")
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        @Html.LabelFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.LabelFor(model => model.Item.Name)
+                    </th>
+                    <th>
+                        @Html.LabelFor(model => model.Item.ChinName)
+                    </th>
+                    <th>
+                        @Html.LabelFor(model => model.Date)
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Item.ChinName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Date)
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        @Html.LabelFor(model => model.State)
+                    </th>
+                    <th>
+                        @Html.LabelFor(model => model.Quantity)
+                    </th>
+                    <th>@Html.LabelFor(model => model.Note)</th>
+                    <th>
+                        @Html.LabelFor(model => model.ExpirationDate)
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        @*@(Html.EnumDropDownListFor<GongChaWebApplication.Models.Stock, GongChaWebApplication.Models.StockState>(model => model.State))
+                        @Html.ValidationMessageFor(model => model.State)*@
+                        @Html.DisplayFor(model => model.State)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control valid", @style = "display: inline-block;width:80px;" })
+                        <span>@Html.DisplayFor(model => model.Item.PackageUnit.Symbol)</span>
+                        @Html.ValidationMessageFor(model => model.Quantity)
+
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Note, new { @class = "form-control", @disabled = "disabled" })
+                    </td>
+                    <td>
+                        @*@Html.EditorFor(model => model.ExpirationDate)*@
+                        @Html.TextBox("ExpirationDate", Model.ExpirationDate.ToString("yyyy-MM-dd"), new { @class = "form-control valid", @type = "date", @style = "max-width:400px;" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+
+
+        <div class="editor-label">
+        </div>
+        <div class="editor-field">
+        </div>
+
+        <p>
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "List", new { Id = Model.LocationId }, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            $("#State").val(@Model.stateValue);
+        });
+    </script>
+}

@@ -1,0 +1,37 @@
+﻿@model GongChaWebApplication.Models.WageType
+
+@{
+    ViewBag.Title = "Wage Type Details";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<fieldset>
+    <legend>WageType</legend>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+    <div class="display-label">
+        @Html.LabelFor(model => model.Color)
+    </div>
+    <div class="display-field">
+        <span  style="background-color:@(Model.Color)">
+            @Html.DisplayFor(model => model.Color)
+        </span>
+    </div>
+    <div class="display-label">
+        @Html.LabelFor(model => model.targetMultiplier)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.targetMultiplier)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class="btn btn-default"})
+    @Html.ActionLink("Back to List", "Index",null, new { @class="btn btn-default"})
+</p>

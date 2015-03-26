@@ -1,0 +1,42 @@
+﻿@using GongChaWebApplication.Models;
+@model IEnumerable<StockHistory>
+
+@{
+    ViewBag.Title = "Stock Take History for " + ViewBag.Location.Name;
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>Stock Purchase Histories for @ViewBag.Location.Name</h2>
+<p>
+    @Html.ActionLink("Purchase Stock", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+@*@{Html.RenderPartial("_ListStocks", Model.Stocks);}*@
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tbody>
+            @foreach (var history in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelitem => history.RecordTime)</td>
+                    <td>@Html.DisplayFor(modelitem => new ItemViewModel(history.Item).Label)</td>
+                    <td>@Html.DisplayFor(modelitem => history.Location.Name)</td>
+                    <td>@Html.DisplayFor(modelitem => history.ExpirationDate)</td>
+                    <td>@Html.DisplayFor(modelitem => history.ChangeQuantity)</td>
+                </tr>
+            }
+        </tbody>
+        <thead>
+            <tr>
+                <th>@Html.Label("Purchase Time")</th>
+                <th>@Html.DisplayNameFor(model => model.Item)</th>
+                <th>@Html.DisplayNameFor(model => model.Location)</th>
+                <th>@Html.DisplayNameFor(model => model.ExpirationDate)</th>
+                <th>@Html.Label("Purchase Amount")</th>
+            </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

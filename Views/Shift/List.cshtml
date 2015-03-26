@@ -1,0 +1,117 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Shift>
+@using GongChaWebApplication.Models;
+@using GongChaWebApplication.Helpers;
+@{
+    ViewBag.Title = "Shift List For " + ((Location)ViewBag.CurrentLocation).Name;
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    var CurrentMonday = GongChaDateTimeWrapper.StartOfWeek(GongChaDateTimeWrapper.Now);
+    var ComingSunday = GongChaDateTimeWrapper.EndOfWeek(GongChaDateTimeWrapper.Now);
+
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@if (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER || CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+{
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+    <p>
+        @*<a class="btn btn-primary" href="@Url.Action("ViewPeriod", new { StoreId = ViewBag.StoreId, StartTime = CurrentMonday.ToString("yyyy/MM/dd HH:mm"), EndTime = ComingSunday.ToString("yyyy/MM/dd HH:mm") })">View Weekly Shifts</a>*@
+        @Html.ActionLink("View Weekly Shifts", "ViewPeriod", new { StoreId = ViewBag.StoreId, StartTime = CurrentMonday.ToString("yyyy/MM/dd HH:mm"), EndTime = ComingSunday.ToString("yyyy/MM/dd HH:mm") }, new { @class = "btn btn-primary" })
+    </p>
+}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>Store Name
+            </th>
+            <th>Shift For
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IssueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartHour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndHour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BreakTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalHour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReviewDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WageType.Name)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Store.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Memeber.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartHour)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndHour)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BreakTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalHour)
+                </td>
+                <td>
+                    @if (item.ReviewDate.HasValue)
+                    {
+                        
+                        @Html.DisplayFor(modelItem => item.ReviewDate)
+                    }
+                    else
+                    {
+                        if (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER || CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+                        {
+                        @Html.ActionLink("Review", "Review", new { id = item.Id }, new { @class = "btn btn-default" })
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WageType.Name)
+                </td>
+                <td>
+                    @if (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER || CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @if (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER || CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+@if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR)
+{
+    @Html.ActionLink("Back to Store List", "Index", null, new { @class = "btn btn-default" })
+}

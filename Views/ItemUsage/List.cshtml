@@ -1,0 +1,118 @@
+﻿@model GongChaWebApplication.Models.ItemWeeklyUsageViewModel
+
+@using GongChaWebApplication.Models;
+@{
+    ViewBag.Title = "Item Usage Per Week History";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+
+@foreach (var loc in Model.Location)
+{
+    <fieldset>
+        <legend>@Html.Label(loc.Name)</legend>
+        @{
+    Dictionary<int, Dictionary<Item, int>> WeekDictionary;
+    Model.WeekUsageOfItemOfLocation.TryGetValue(loc, out WeekDictionary);
+    if (WeekDictionary != null)
+    {
+            <div class="data-div">
+                @foreach (var weekNb in Model.WeekNbs)
+                {
+                    Dictionary<Item, int> WeekUsageDictionary;
+                    WeekDictionary.TryGetValue(weekNb, out WeekUsageDictionary);
+                    var dummyStockHistory = new GongChaWebApplication.Models.StockHistory();
+                    var itemUsage = 0;
+                    var WeekCount = 0;
+
+                    var weekStartDate = Model.WeekStartDate[weekNb];
+                    var weekEndDate = Model.WeekEndDate[weekNb];
+                    <h3 style="padding-left: 30px;">
+                        @Html.Label(weekNb.ToString() + " - "
+                        + weekStartDate.ToShortDateString() + " - "
+                        + weekEndDate.ToShortDateString())
+                    </h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="Lcoation@(loc.Id)Wk@(weekNb)">
+                            <caption></caption>
+                            <thead>
+                                <tr>
+                                    <th>Week Number
+                                    </th>
+                                    <th>Stock Usage
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (WeekUsageDictionary != null)
+                                {
+                                    foreach (var keyValuePair in WeekUsageDictionary)
+                                    {
+                                        
+                                    <tr>
+                                        <td>
+                                            @Html.Raw(new ItemViewModel(keyValuePair.Key).Label)
+                                        </td>
+                                        <td>
+                                            @{
+                                        itemUsage += keyValuePair.Value;
+                                        WeekCount++;
+                                            }
+                                            @Html.DisplayFor(modelItem => keyValuePair.Value)
+                                        </td>
+                                    </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7">No Record for this week number yet.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                @*<tr>
+                                    <td>Average Usage :</td>
+                                    <td>
+                                        @if (WeekCount != 0)
+                                        {
+                                            @Html.Raw(itemUsage / WeekCount)
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw(0)
+                                        }
+                                    </td>
+                                </tr>*@
+                            </tfoot>
+                        </table>
+                    </div> 
+                }
+            </div>
+    }
+    else
+    {
+            <div>
+                @Html.Raw("No Record is found for this store.")
+            </div>
+    }
+        }
+    </fieldset>
+}
+
+@section styles{
+    @Styles.Render("~/Content/themes/base/css")
+}
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        $(".data-div").each(function () {
+            $(this).accordion();
+        });
+    </script>
+}

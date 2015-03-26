@@ -1,0 +1,64 @@
+﻿@model GongChaWebApplication.Models.TransferOrderDetail
+@{
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.ItemId)
+    <td>
+        @if (Model.ItemId != null && Model.Item != null && Model.ItemId != 0)
+        {
+            @Html.TextBox("ItemSelector", new GongChaWebApplication.Models.ItemViewModel(Model.Item).Label, new { placeholder = "Enter Item Serial...", data_autocomplete = Url.Action("AutoComplete", "Item"), @class = "form-control" })
+        }
+        else
+        {
+            @Html.TextBox("ItemSelector", "", new { placeholder = "Enter Item Serial...", data_autocomplete = Url.Action("AutoComplete", "Item"), @class = "form-control" })
+        }
+    </td>
+@*<input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="Details_@(ViewBag.Tick)__detail_Id" name="Details[@(ViewBag.Tick)].detail.Id" type="hidden" value="0">
+    <div class="editor-label">
+        @Html.LabelFor(model => model.ItemId)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.ItemId)
+        @Html.ValidationMessageFor(model => model.ItemId)
+        <input class="text-box single-line valid" data-val="true" data-val-number="The field ItemId must be a number." data-val-required="The ItemId field is required." id='Details_@(ViewBag.Tick)__detail_ItemId' name="Details[@(ViewBag.Tick)].detail.ItemId" type="number" value="0">
+        <span class="field-validation-valid" data-valmsg-for="Details[@(ViewBag.Tick)].detail.ItemId" data-valmsg-replace="true"></span>
+    </div>*@
+    <td>
+        <span class="SrcStockAmount"></span>
+        <select class="SrcStockBeforeSelect form-control" data-val-number="Must pick a stock" data-val-required="The stock from source is required.">
+            @if (Model.SrcStockBefore != null)
+            {
+                <option selected>@(Model.SrcStockBefore.ExpirationDate.ToString("yyyy-MM-dd")
+                                    + " - "
+                                    + Model.SrcStockBefore.Quantity
+                                    + " "
+                                    + Model.SrcStockBefore.Item.PackageUnit.Symbol)</option>
+            }
+            else
+            {
+                <option selected>Select a stock...</option>
+            }
+        </select>
+        <span class="field-validation-valid" data-valmsg-for="SrcStockBeforeSelect" data-valmsg-replace="true"></span>
+        @Html.HiddenFor(model => model.SrcStockBeforeId, new { @class = "SrcStockBefore" })
+        @*@Html.HiddenFor(model=>model.SrcStockAfter.Quantity)*@
+    </td>
+    <td>
+        @Html.TextBoxFor(model => model.QuantityChange, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.QuantityChange)
+        @*<input class="text-box single-line valid" data-val="true" data-val-number="The field QuantityChange must be a number." data-val-required="The QuantityChange field is required." id="Details_@(ViewBag.Tick)__detail_QuantityChange" name="Details[@(ViewBag.Tick)].detail.QuantityChange" type="number" value="0">
+        <span class="field-validation-valid" data-valmsg-for="Details[@(ViewBag.Tick)].detail.QuantityChange" data-valmsg-replace="true"></span>*@
+    </td>
+    <td>
+        <span class="ItemQuantityUnit">
+            @if (Model.ItemId != null && Model.Item != null && Model.ItemId != 0)
+            {
+                @Html.Raw(Model.Item.PackageUnit.Symbol)
+            }
+        </span>
+    </td>
+    <td>
+        <span class="DstStockAmount"></span>
+        @Html.HiddenFor(model => model.DstStockBeforeId, new { @class = "DstStockBefore" })
+        @*@Html.HiddenFor(model=>model.DstStockAfter.Quantity)*@
+    </td>
+}

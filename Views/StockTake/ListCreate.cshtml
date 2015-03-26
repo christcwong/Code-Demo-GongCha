@@ -1,0 +1,183 @@
+﻿@model GongChaWebApplication.Models.StockTakeListCreateViewModel
+
+@{
+    ViewBag.Title = "Create Stock Take Record";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+<div class="table-responsive">
+    @using (Html.BeginForm())
+    {
+        @Html.LabelFor(model => model.dummyStock.Date)
+        @Html.TextBox("dummyStock.Date", Model.dummyStock.Date.ToString("yyyy-MM-dd"), new { @class = "form-control valid", @type = "date", @style = "display: inline-block;max-width:150px;" })
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Item.Serial)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Item.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Item.ChinName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Item.Specification)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Quantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Item.GrossWeight)
+                    </th>
+                    <th colspan="3" class="text-center">
+                        @Html.DisplayName("Volume")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.Item.CBM)
+                    </th>
+                    <th>
+                        @Html.DisplayName("Total (kgs)")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.dummyStock.ExpirationDate)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Details.Count; i++)
+                {
+@*if (!Model.Details[i].ExistingStocks.Any())
+                    {
+                    <tr class="info">
+                        @Html.HiddenFor(model => model.Details[i].NewStock.LastModified)
+                        @Html.HiddenFor(model => model.Details[i].isModified)
+                        @Html.HiddenFor(model => model.Details[i].NewStock.ItemId)
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.Serial)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.ChinName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.Specification)
+                        </td>
+                        <td>
+                            @Html.EditorFor(model => model.Details[i].NewStock.Quantity)
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.PackageUnit.Symbol)
+                            @Html.ValidationMessageFor(model => model.Details[i].NewStock.Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.GrossWeight)
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.GrossWeightUnit.Symbol)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.VolumeH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.VolumeW)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.VolumeL)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].NewStock.Item.CBM)
+                        </td>
+                        <td>
+                            @Html.Display("0.00")
+                        </td>
+                        <td>
+                            @Html.EditorFor(model => model.Details[i].NewStock.ExpirationDate)
+                            @Html.ValidationMessageFor(model => model.Details[i].NewStock.ExpirationDate)
+                        </td>
+                    </tr>
+                    }
+                    else
+                    {
+                    *@
+                    if (Model.Details[i].ExistingStocks.Any())
+                    {
+                    <tr>
+                        @Html.HiddenFor(model => model.Details[i].ExistingStocks[0].LastModified)
+                        @Html.HiddenFor(model => model.Details[i].isModified)
+                        @Html.HiddenFor(model => model.Details[i].ExistingStocks[0].Id)
+                        @Html.HiddenFor(model => model.Details[i].ExistingStocks[0].ItemId)
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.Serial)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.ChinName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.Specification)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => model.Details[i].ExistingStocks[0].Quantity, new { @class = "form-control valid", @style = "display: inline-block;max-width:70px;" })
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.PackageUnit.Symbol)
+                            @Html.ValidationMessageFor(model => model.Details[i].ExistingStocks[0].Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.GrossWeight)
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.GrossWeightUnit.Symbol)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.VolumeH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.VolumeW)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.VolumeL)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].Item.CBM)
+                        </td>
+                        <td>
+                            @Html.Display("0.00")
+                        </td>
+                        <td>
+                            @Html.HiddenFor(model => model.Details[i].ExistingStocks[0].ExpirationDate)
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[0].ExpirationDate)
+                            @Html.ValidationMessageFor(model => model.Details[i].ExistingStocks[0].ExpirationDate)
+                        </td>
+                    </tr>
+                        for (var j = 1; j < Model.Details[i].ExistingStocks.Count; j++)
+                        {
+                    <tr>
+                        <td colspan="4">
+                            @Html.HiddenFor(model => model.Details[i].ExistingStocks[j].Id)
+                            @Html.HiddenFor(model => model.Details[i].ExistingStocks[j].LastModified)
+                            @Html.HiddenFor(model => model.Details[i].ExistingStocks[j].ItemId)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => Model.Details[i].ExistingStocks[j].Quantity, new { @class = "form-control valid",  @style = "display: inline-block;max-width:70px;" })
+                            @Html.DisplayFor(model => Model.Details[i].ExistingStocks[j].Item.PackageUnit.Symbol)
+                        </td>
+                        <td colspan="6"></td>
+                        <td>
+                            @Html.HiddenFor(model => model.Details[i].ExistingStocks[j].ExpirationDate)
+                            @Html.DisplayFor(model => model.Details[i].ExistingStocks[j].ExpirationDate)
+                        </td>
+                    </tr>
+                        }
+                    }
+
+                }
+            </tbody>
+        </table>
+        <input type="submit" class="btn btn-primary" value="Confirm" />
+    }
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+}

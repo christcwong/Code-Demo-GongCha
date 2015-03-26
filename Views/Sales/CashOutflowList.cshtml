@@ -1,0 +1,17 @@
+﻿@model GongChaWebApplication.Models.CashOutflowViewModel
+
+@{
+    ViewBag.Store = Session["CurrentStore"];
+
+    ViewBag.Title = ViewBag.Store.Name + "Sales List";
+    //ViewData["SalesItems"] = model.SalesItems;
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+@using (Html.BeginForm())
+{
+    if (((GongChaWebApplication.Models.Member)Session["CurrentMember"]).AccessLevel == "director")
+    {
+        <h1 class="page-header">@ViewBag.Store.Name Cash Outflow List</h1>
+        @Html.DisplayFor(model => model.CashOutflowItems, "CashOutflowItemsList")
+    }
+}

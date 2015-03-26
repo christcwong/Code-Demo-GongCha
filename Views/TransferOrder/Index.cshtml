@@ -1,0 +1,75 @@
+﻿@using GongChaWebApplication.Models;
+@model IEnumerable<GongChaWebApplication.Models.TransferOrder>
+
+@{
+    ViewBag.Title = "Transfer Orders";
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+
+    var CurrentMember = (Member)Session["CurrentMember"];
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR || CurrentMember.AccessLevel == MemberAccessLevels.WAREHOUSE_MANAGER)
+{
+    <p>
+        @Html.ActionLink("Create New Transfer Order", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>Source Location
+                @*@Html.DisplayNameFor(model => model.SourceLocation.Name)*@
+            </th>
+            <th>Destination Location
+                @*@Html.DisplayNameFor(model => model.DestinationLocation.Name)*@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issuer.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IssueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EffectiveDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SourceLocation.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DestinationLocation.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Issuer.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EffectiveDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR || CurrentMember.AccessLevel == MemberAccessLevels.WAREHOUSE_MANAGER)
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-default" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

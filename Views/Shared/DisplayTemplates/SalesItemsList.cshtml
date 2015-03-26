@@ -1,0 +1,64 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Sales>
+
+<p>
+    @if (((GongChaWebApplication.Models.Member)Session["CurrentMember"]).AccessLevel != "director")
+            {
+    <a class="btn btn-primary" href="@Url.Action("Create")">Create New Takings</a>
+    }
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SalesAmount)
+                </th>
+                <th class="hidden-xs">
+                    @Html.DisplayNameFor(model => model.Weather)
+                </th>
+                <th class="hidden-xs">
+                    Submit By
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="vert-align-middle">
+                        @Html.DisplayFor(modelItem => item.Date)
+                        @Html.DisplayFor(modelItem => item.Date.DayOfWeek)
+                    </td>
+                    <td class="vert-align-middle">
+                        @Html.DisplayFor(modelItem => item.SalesAmount)
+                    </td>
+                    <td class="hidden-xs vert-align-middle">
+                        @Html.DisplayFor(modelItem => item.Weather)
+                    </td>
+                    <td class="hidden-xs vert-align-middle">
+                        @Html.DisplayFor(modelItem => item.Member.Name)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @Class="btn btn-primary" })
+                        @*@Html.ActionLink("Details", "SalesDetail", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                        @Html.HiddenFor(modelItem => item.Store.Id)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .table tbody > tr > td.vert-align-middle
+    {
+        vertical-align: middle;
+    }
+</style>

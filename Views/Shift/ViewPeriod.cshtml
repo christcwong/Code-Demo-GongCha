@@ -1,0 +1,289 @@
+﻿@model GongChaWebApplication.Models.ShiftPeriodViewModel
+@{
+    ViewBag.Title = "Week";
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+}
+
+@Styles.Render("~/Content/jquerytimepicker")
+
+@*Notice these scripts are put here to help dynamic loading of spinners and other jquery dependenct*@
+@Scripts.Render("~/bundles/jquery")
+
+
+<h2>Period View from @(Model.StartDate.ToShortDateString()) to @(Model.EndDate.ToShortDateString())</h2>
+@* So what would we like to do with this ? guess we need a calendar to display/create/edit shifts , some controls to pick dates *@
+
+<div style="margin: 20px 0px;">
+    <select id="selectDateRange" class="form-control">
+    </select>
+</div>
+
+<div id="data-div">
+    <h3 class="category">
+        @Html.Label("Staff of " + Model.Store.Name)
+    </h3>
+    <div class="table-responsive">
+        <table class="table table-bordered" id="data-table1">
+            <tbody class="category-detail">
+                @foreach (var member in Model.Members)
+                {
+                    var entry = Model.MemberDetails[member];
+                    var shiftPeriodMemberViewModel = entry;
+                    <tr>
+                        <td>
+                            @Html.Label(member.Name)
+                        </td>
+                        @foreach (var detail in shiftPeriodMemberViewModel.DayDetails)
+                        {
+                            <td>
+                                @{Html.RenderPartial("ShiftPeriodMemberDayView", detail.Value);}
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+            <thead>
+                <tr>
+                    <td></td>
+                    @foreach (var day in Model.Days)
+                    {
+                        <td>
+                            @Html.Raw(day.Date.ToShortDateString())
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <td></td>
+                    @foreach (var day in Model.Days)
+                    {
+                        <td>
+                            @Html.Raw(day.Date.DayOfWeek)
+                        </td>
+                    }
+                </tr>
+            </thead>
+            <tfoot></tfoot>
+        </table>
+    </div>
+    @if (Model.BorrowedMembers.Any())
+    {
+        <h3 class="category" id="h3-other-store">
+            @Html.Label("Staff from Other Stores") <span class="glyphicon glyphicon-zoom-in"></span>
+        </h3>
+        <div class="table-responsive" id="data-div2">
+            <table class="table table-bordered" id="data-table2">
+                <tbody class="category-detail">
+                    @foreach (var member in Model.BorrowedMembers)
+                    {
+                        var entry = Model.MemberDetails[member];
+                        var shiftPeriodMemberViewModel = entry;
+                        <tr>
+                            <td>
+                                @Html.Label(member.Name)
+                            </td>
+                            @foreach (var detail in shiftPeriodMemberViewModel.DayDetails)
+                            {
+                                <td>
+                                    @{Html.RenderPartial("ShiftPeriodMemberDayView", detail.Value);}
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+                <thead>
+                    <tr>
+                        <td></td>
+                        @foreach (var day in Model.Days)
+                        {
+                            <td>
+                                @Html.Raw(day.Date.ToShortDateString())
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td></td>
+                        @foreach (var day in Model.Days)
+                        {
+                            <td>
+                                @Html.Raw(day.Date.DayOfWeek)
+                            </td>
+                        }
+                    </tr>
+                </thead>
+                <tfoot>
+                </tfoot>
+            </table>
+        </div>
+    }
+</div>
+@section styles{
+    @Styles.Render("~/Content/themes/base/css")
+}
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/datejs")
+    @Scripts.Render("~/bundles/jquerytimepicker")
+    <script type="text/javascript">
+        // Region : control of modal
+        $(".table tbody").on("click", "button.close", "", function () {
+            var button = $(this);
+            var tablerow = $(this).closest("tr");
+            tablerow.hide(100);
+            var markDeleted = tablerow.find("input#shiftEditModel_MarkDeleted");
+            markDeleted.val(true);
+        });
+
+        $('.table').on('show.bs.modal', 'div[id^="modal-"]', function () {
+            $('span[id^="msg-box-"]').html('');
+        });
+        $('.table').on('hidden.bs.modal', 'div[id^="modal-"]', function () {
+            var msgbox = $(this).find('div[id^="msg-box-"]');
+            if ($.trim(msgbox.html()) != '') {
+                location.reload();
+            }
+        });
+        // Region : control of modal
+        
+        // Region : control of time picker
+        var addShiftLayout = function (container) {
+            var startHour = $(container).find("*[id*='_Shift_StartHour']");
+            var endHour = $(container).find("*[id*='_Shift_EndHour']");
+            var breakTime = $(container).find("*[id*='_Shift_BreakTime']");
+            var totalHour = $(container).find("*[id*='_Shift_TotalHour']");
+            
+            
+            startHour.timepicker({
+                timeFormat: 'H:i',
+                forceRoundTime: true,
+                minTime: "00:00",
+                maxTime: "24:00"
+            }
+            );
+            endHour.timepicker({
+                timeFormat: 'H:i',
+                forceRoundTime: true,
+                minTime: "00:00",
+                maxTime: "24:00"
+            });
+            totalHour.attr("disabled", "disabled");
+            startHour.change(function(){calculateTotalHour(container);});
+            endHour.change(function(){calculateTotalHour(container);});
+            breakTime.change(function(){calculateTotalHour(container);});
+
+        }
+
+        var calculateTotalHour = function (container) {
+            var startHour = $(container).find("*[id*='_Shift_StartHour']");
+            var endHour = $(container).find("*[id*='_Shift_EndHour']");
+            var breakTime = $(container).find("*[id*='_Shift_BreakTime']");
+            var totalHour = $(container).find("*[id*='_Shift_TotalHour']");
+            var startHour = startHour.val();
+            var endHour = endHour.val();
+            var breakTime = breakTime.val();
+            var boolHasStartHour = startHour ? true : false;
+            var boolHasEndHour = endHour ? true : false;
+            var boolHasBreakTime = breakTime ? true : false;
+            if (boolHasStartHour && boolHasEndHour) {
+                var totalHour = totalHour;
+                var dummyDate = "1970-1-1 ";
+                var startHourDate = new Date(dummyDate + startHour + ":00");
+                if (endHour == "24:00") {
+                    endHour = "00:00";
+                    //dummyDate = "1970-1-2 "; //removed because the next statement will increase 1 day
+                }
+                var endHourDate = new Date(dummyDate + endHour + ":00");;
+                if (endHour < startHour) {
+                    endHourDate.setDate(endHourDate.getDate() + 1);
+                }
+                var duration = Math.abs(endHourDate - startHourDate) / 3.6e6 - breakTime;
+                duration = Math.abs(endHourDate - startHourDate) / 3.6e6 - breakTime;
+                totalHour.val(duration);
+            }
+        }
+        // Region : control of time picker
+
+        // Region : load select Date Range drop down list
+        var loadSelectDateRange = function(){
+            var today = Date.today();
+            var week = [];
+                @{var nbOfWeeksToView = (Model.NumberOfWeeksToView.HasValue ? Model.NumberOfWeeksToView.Value : 5);}
+            for (var i = 0; i < @(nbOfWeeksToView); i++) {
+                var date1,date2;
+                if (Date.today().is().monday()) {
+                    date1 = Date.parse("last monday").addWeeks(i).toString('d/MMM/yyyy');
+                    date2 = Date.parse(date1).addDays(6).toString('d/MMM/yyyy');
+                } else {
+                    date1 = Date.parse("last monday").addWeeks(i-1).toString('d/MMM/yyyy');
+                    date2 = Date.parse(date1).addDays(6).toString('d/MMM/yyyy');
+                }
+                week[i] = date1 + " to " + date2;
+                var urlDateRange = encodeURIComponent(Date.parse(date1).toString('yyyy/MM/d'));
+                var urlStartDate = encodeURIComponent(Date.parse(date1).toString('yyyy/MM/d'));
+                var urlEndDate = encodeURIComponent(Date.parse(date2).toString('yyyy/MM/d'));
+                $("select#selectDateRange").append("<option value='&StartTime=" + urlStartDate + "&EndTime=" + urlEndDate + "'>" + week[i] + "</option>")
+            }
+
+            var urlParaStartTime = getUrlParameter('StartTime');
+            var urlParaEndTime = getUrlParameter('EndTime');
+            var decodedUrlParaStartTime = decodeURIComponent(urlParaStartTime);
+            var decodedUrlParaEndTime = decodeURIComponent(urlParaEndTime);
+            var parsedUrlParaStartTime = Date.parse(decodedUrlParaStartTime).toString('yyyy/MM/d');
+            var parsedUrlParaEndTime = Date.parse(decodedUrlParaEndTime).toString('yyyy/MM/d');
+            var encodedUrlParaStartTime = encodeURIComponent(parsedUrlParaStartTime);
+            var encodedUrlParaEndTime = encodeURIComponent(parsedUrlParaEndTime);
+            var valText = "&StartTime=" + encodedUrlParaStartTime + "&EndTime=" + encodedUrlParaEndTime;
+
+            $("#selectDateRange").val(valText);
+
+            $("#selectDateRange").change(function () {
+                window.location.href = "ViewPeriod?StoreId=@(Model.StoreId)" + $("select#selectDateRange").val();
+            });
+        }
+
+        function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+        // Region : load select Date Range drop down list
+
+        //Region : slide down of borrowed staff
+        var slideDownForBorrowedStaff = function(){
+            //$('#data-div').accordion({
+            //    animate : 200,
+            //    header: '.category' ,
+            //    icons:null,
+            //});
+
+            $('#h3-other-store').click(function(){
+                if ( $( "#data-div2" ).is( ":hidden" ) ) {
+                    $( "#data-div2" ).slideDown( "slow" );
+                    $("#data-div2").css("overflow","auto");
+                    $("#h3-other-store").html('@Html.Label("Staff from Other Stores")<span class="glyphicon glyphicon-zoom-out"></span>');
+                } else {
+                    $( "#data-div2" ).hide();
+                    $("#h3-other-store").html('@Html.Label("Staff from Other Stores")<span class="glyphicon glyphicon-zoom-in"></span>');
+                }
+            });
+            $('#data-div2').hide();
+        }
+        //Region : slide down of borrowed staff
+
+        // Region : onLoad Scripts
+        $(function () {
+
+            $("table[id^='shift-table'] tbody tr[class^='ItemDetail']").each(function (index, element) {
+                addShiftLayout(element);
+            });
+            loadSelectDateRange();
+            slideDownForBorrowedStaff();
+        });
+        // Region : onLoad Scripts
+    </script>
+}
+

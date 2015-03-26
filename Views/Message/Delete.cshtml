@@ -1,0 +1,24 @@
+﻿@model GongChaWebApplication.Models.Message
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Message</legend>
+    <table class="table table-bordered">
+        @Html.DisplayFor(model => model, "DisplayMessage")
+    </table>
+</fieldset>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" class="btn btn-primary" />
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+    </p>
+}

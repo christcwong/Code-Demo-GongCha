@@ -1,0 +1,52 @@
+﻿@model GongChaWebApplication.Models.SalesTarget
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_SalesLayout.cshtml";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>SalesTarget</legend>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Store.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Store.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Date)
+        @Html.ValidationMessageFor(model => model.Date)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.WageType.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WageType.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Target)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Target)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Note)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Note)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,123 @@
+﻿@using GongChaWebApplication.Helpers;
+@model GongChaWebApplication.Models.StoreShiftViewModel
+@using Newtonsoft.Json;
+
+@{    
+    ViewBag.Title = "Store Shift Summary for " + Model.Store.Name;
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    var CurrentYear = GongChaDateTimeWrapper.Now.Year;
+    List<int> availableWeekNumbers;
+    var hasWeekNumber = Model.AvailableWeekNumbersForYears.TryGetValue(CurrentYear, out availableWeekNumbers);
+    var CurrentWeekNumber = hasWeekNumber ? availableWeekNumbers.Max() : GongChaDateTimeWrapper.WeekNumber(GongChaDateTimeWrapper.Now);
+    ViewBag.Year = new SelectList((Model.AvailableWeekNumbersForYears.Keys.Union(new List<int> { CurrentYear })).OrderByDescending(a => a), CurrentYear);
+    ViewBag.WeekNumber = new SelectList((hasWeekNumber ? availableWeekNumbers : new List<int> { CurrentWeekNumber }).OrderByDescending(a => a), CurrentWeekNumber);
+}
+
+
+<h2>@(ViewBag.Title)</h2>
+<table>
+    <tr>
+        <th>Year</th>
+        <th>Week Number</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>
+            @Html.DropDownList("Year", (SelectList)ViewBag.Year, new { @class = "form-control" })
+        </td>
+        <td>
+            @Html.DropDownList("WeekNumber", (SelectList)ViewBag.WeekNumber, new { @class = "form-control" })
+        </td>
+        <td>
+            <button id="viewBtn" class="btn">Go</button>
+        </td>
+    </tr>
+</table>
+@*<form role="form" class="form-inline">
+    <div class="form-group">
+        <div class="input-group">
+            @Html.DropDownList("Year", (SelectList)ViewBag.Year, new { @class = "form-control" })
+            @Html.DropDownList("WeekNumber", (SelectList)ViewBag.WeekNumber, new { @class = "form-control" })
+            <button id="viewBtn" class="btn form-control">Go</button>
+        </div>
+    </div>
+</form>*@
+<div id="data">
+    Loading...
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datejs")
+    <script type="text/javascript">
+        var WeekNumbers = @Html.Raw(JsonConvert.SerializeObject(Model.AvailableWeekNumbersForYears)) ;
+        var StartOfWkOfYr = @Html.Raw(JsonConvert.SerializeObject(Model.StartDateOfWeekNbOfYr)) ;
+        var EndOfWkOfYr = @Html.Raw(JsonConvert.SerializeObject(Model.EndDateOfWeekNbOfYr)) ;
+        function GetData() {
+            var viewport = $('#data');
+            viewport.html("Loading Data...");
+            //viewport.attr("style","cursor:progress");
+            $("body").attr("style", "cursor:progress");
+            var year = $('#Year').val();
+            var weeks = $('#WeekNumber').val();
+            //var StartOfYear = new Date(year, 0, 1);
+            //var FirstMondayOfStartOfYear = StartOfYear.clone().last().monday();
+            //var startDate = FirstMondayOfStartOfYear.clone().addWeeks(weeks - 1);
+            //var endDate = startDate.clone().addWeeks(1);
+            var startDate = StartOfWkOfYr[year][weeks];
+            var endDate = EndOfWkOfYr[year][weeks];
+
+            @*$.post("@Url.Action("GetRangeDetail", "StoreShiftSummary")/?storeId=@(Model.Store.Id)&weekNumber=" + weeks + "&startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(), function (dataPartialView) {
+                viewport.html(dataPartialView);
+                //viewport.attr("style","cursor:auto");
+                $("body").attr("style","cursor:auto");
+            });*@
+            // use $.ajax instead as it provide error handling
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRangeDetail", "StoreShiftSummary")",
+                data: "storeId=@(Model.Store.Id)&weekNumber=" + weeks + "&startDate=" + startDate + "&endDate=" + endDate,
+                success: function (dataPartialView) {
+                    viewport.html(dataPartialView);
+                    //viewport.attr("style","cursor:auto");
+                    $("body").attr("style", "cursor:auto");
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    viewport.html("Failed to load data. Please try again.");
+                    $("body").attr("style", "cursor:auto");
+                }
+
+            });
+
+        };
+
+        function GetWeekNumbers() {
+            var year = $('#Year').val();
+            var WeekNumberDDL = $('#WeekNumber');
+            var selectedWeekNumbers = WeekNumbers[year];
+            //alert(WeekNumbers[year]);
+            WeekNumberDDL.empty();
+            //WeekNumberDDL.append('<option value="">Week Number</option>');
+            $.each(selectedWeekNumbers, function (index, data) {
+                //alert("Each of Selected Week Numbers : "+index+" "+data+" "+data[index]);
+                var startDate = new Date(StartOfWkOfYr[year][data]);
+                var endDate = new Date(EndOfWkOfYr[year][data]);
+                var startDateString = startDate.getFullYear() +"/"+(startDate.getMonth()+1)+"/"+startDate.getDate();
+                var endDateString = endDate.getFullYear() +"/"+(endDate.getMonth()+1)+"/"+endDate.getDate();
+                WeekNumberDDL.append("<option value=" + data + ">" + data+" - "+ startDateString+" - " + endDateString + "</option>");
+            });
+            //return WeekNumbers[year];
+        };
+
+        $(function () {
+            var button = $('#viewBtn');
+            button.click(GetData);
+
+            var yearList = $('#Year');
+            yearList.change(GetWeekNumbers);
+
+            GetWeekNumbers();
+            GetData();
+        });
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Message>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+}
+
+<h2>Annoucments</h2>
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tr class="row">
+                <th class="col-md-1 hidden-xs">
+                    @Html.DisplayNameFor(model => model.Writer)
+                </th>
+                <th class="col-md-1">
+                    @Html.Label("Latest Edit Time")
+                </th>
+                <th class="col-md-1">
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+
+                <th class="col-md-6">
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th class="col-md-1 hidden-xs">@Html.Label("Number of Replies")</th>
+                <th class="col-md-2"></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr class="row">
+                    <td class="col-md-1 hidden-xs">
+                        @Html.DisplayFor(modelItem => item.Writer.Name)
+                    </td>
+                    <td class="col-md-1">
+                        @Html.Raw(item.EditTime.HasValue ?
+                            (item.EditTime.Value < item.PostTime ? item.PostTime : item.EditTime.Value) :
+                            item.PostTime
+                        )
+                    </td>
+                    <td class="col-md-1">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td class="col-md-6">
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td class="col-md-1 hidden-xs">
+                        @Html.Raw(item.ChildMessages.Count())
+                    </td>
+                    <td class="col-md-2">@Html.ActionLink("View Thread", "ViewThread", "Message", new { id = item.Id }, new { @class = "btn btn-default" })</td>
+                </tr>
+            }
+
+        </table>
+    </div>
+}
+else
+{
+    @Html.Raw("");
+}

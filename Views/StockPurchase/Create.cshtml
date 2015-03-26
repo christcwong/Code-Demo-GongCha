@@ -1,0 +1,81 @@
+﻿@model GongChaWebApplication.Models.Stock
+
+@{
+    ViewBag.Title = "Create Stock Take For " + Model.Location.Name;
+    Layout = "~/Views/Shared/_InventoryLayout.cshtml";
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Stock</legend>
+
+        @Html.HiddenFor(model => model.MemberId)
+        @*@Html.HiddenFor(model=>model.Checker)*@
+        @Html.HiddenFor(model => model.LocationId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("Date", Model.Date.ToString("yyyy-MM-dd"), new { @class = "form-control valid", @type = "date", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.Date)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ItemId, "Item")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("ItemId", (SelectList)ViewBag.ItemId, String.Empty, new { @class = "form-control valid", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.ItemId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Quantity)
+        </div>
+        <div class="editor-field" style="max-width: 400px;">
+            @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control valid", @style = "display:inline-block;" })
+            <span id="packageunit"></span>
+            @Html.ValidationMessageFor(model => model.Quantity)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ExpirationDate)
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("ExpirationDate", Model.ExpirationDate.ToString("yyyy-MM-dd"), new { @class = "form-control valid", @type = "date", @style = "max-width:400px;" })
+            @Html.ValidationMessageFor(model => model.ExpirationDate)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "List", new { id = Model.LocationId }, new { @class = "btn btn-default" })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type="text/javascript">
+    $(function () {
+        $("#ItemId").change(function () {
+            var $id = $("#ItemId").val();
+            $.getJSON("@Url.Action("GetLatestStock", "Stock")/?LocationId=" +@(Model.LocationId) +"&ItemId=" + $id, function (data) {
+                var $packageUnit = $("#packageunit");
+                var $quantity = $("#Quantity");
+                $packageUnit.html(data.Item.PackageUnit.Symbol);
+                $quantity.val(data.Quantity);
+            });
+        }
+        )
+    });
+</script>

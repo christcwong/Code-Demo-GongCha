@@ -1,0 +1,67 @@
+﻿@model GongChaWebApplication.Models.Message
+
+@using GongChaWebApplication.Models;
+@{
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+@Html.HiddenFor(model => model.Id)
+<tr class="row" style="background-color: #cccccc">
+    <th class="col-md-2">
+        @Html.DisplayNameFor(model => model.Title) : @Html.DisplayFor(model => model.Title)
+    </th>
+    <th class="col-md-10" colspan="2">@Html.DisplayNameFor(model => model.Content)</th>
+</tr>
+<tr class="row">
+    <td class="col-md-2">
+        @Html.DisplayNameFor(model => model.Writer) : @Html.DisplayFor(model => model.Writer.Name)
+    </td>
+    <td class="col-md-10" rowspan="3" colspan="2">
+        @*<div class="container" style="width: 100%; height: 100%; box-sizing: border-box; padding: 0; margin: 0;">*@
+        @*@Html.DisplayFor(model => model.Content)*@
+        <div class="container" style="width: 100%; height: 100%; box-sizing: border-box; padding: 0; margin: 0;">
+            @Html.TextAreaFor(model => model.Content, new { @class = "form-control", @style = "width:100%; height:100%;min-height:150px;padding:0;margin:0;overflow:auto;resize:none;background-color:white;", @placholder = "Edit Message Content Here...", @disabled = "disabled" })
+        </div>
+        @*</div>*@
+    </td>
+</tr>
+<tr class="row">
+    <td class="col-md-2">
+        <p>@Html.DisplayNameFor(model => model.PostTime) :</p>
+        <p>@Html.DisplayFor(model => model.PostTime)</p>
+    </td>
+</tr>
+<tr class="row">
+    <td class="col-md-2">
+        <p>@Html.DisplayNameFor(model => model.EditTime) :</p>
+        <p>@Html.DisplayFor(model => model.EditTime)</p>
+    </td>
+</tr>
+<tr class="row" style="background-color: #eeeeee">
+    <td class="col-md-2">
+        @Html.DisplayNameFor(model => model.IsAnnoucement) : @Html.DisplayFor(model => model.IsAnnoucement)
+    </td>
+    <td class="col-md-5">
+        @if (CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR || Model.WriterId == CurrentMember.Id)
+        {
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+        }
+        else
+        {
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-default disabled" })
+        }
+    </td>
+    <td class="col-md-5">
+        @if (Model.Id != 0)
+        {
+            if ((CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR) ||
+                        (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER && Model.Writer.Store != null && CurrentMember.Store.Id == Model.Writer.Store.Id))
+            {
+            @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-default" })
+            }
+            else
+            {
+            @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-default disabled" })
+            }
+        }
+    </td>
+</tr>

@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h1 class="page-header">@ViewBag.Store.Name</h1>
+    @RenderBody()
+</div>
+
+
+@section scripts {
+    @RenderSection("scripts", required: false)
+}

@@ -1,0 +1,108 @@
+﻿@using GongChaWebApplication.Helpers;
+@using Newtonsoft.Json;
+@model GongChaWebApplication.Models.StaffShiftViewModel
+
+
+@{
+    ViewBag.Title = "Shift Summary for " + Model.Member.Name;
+    Layout = "~/Views/Shared/_RosterLayout.cshtml";
+
+    var CurrentYear = GongChaDateTimeWrapper.Now.Year;
+    List<int> availableWeekNumbers;
+    var hasWeekNumber = Model.AvailableWeekNumbersForYears.TryGetValue(CurrentYear, out availableWeekNumbers);
+    var CurrentWeekNumber = hasWeekNumber ? availableWeekNumbers.Max() : GongChaDateTimeWrapper.WeekNumber(GongChaDateTimeWrapper.Now);
+    ViewBag.Year = new SelectList((Model.AvailableWeekNumbersForYears.Keys.Union(new List<int> { CurrentYear })).OrderByDescending(a => a), CurrentYear);
+    ViewBag.WeekNumber = new SelectList((hasWeekNumber ? availableWeekNumbers : new List<int> { CurrentWeekNumber }).OrderByDescending(a => a), CurrentWeekNumber);
+}
+
+<h2>@(ViewBag.Title)</h2>
+<table>
+    <tr>
+        <th>Year</th>
+        <th>Week Number</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>
+            @Html.DropDownList("Year", (SelectList)ViewBag.Year, new { @class = "form-control" })
+        </td>
+        <td>
+            @Html.DropDownList("WeekNumber", (SelectList)ViewBag.WeekNumber, new { @class = "form-control" })
+        </td>
+        <td>
+            <button id="viewBtn" class="btn">Go</button><span id="spin_span"></span>
+        </td>
+    </tr>
+</table>
+
+<div id="data">
+    Loading...
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/datejs")
+    <script type="text/javascript">
+        var WeekNumbers = @Html.Raw(JsonConvert.SerializeObject(Model.AvailableWeekNumbersForYears));
+        function GetData() {
+            var viewport = $('#data');
+            //viewport.attr("style","cursor:progress");
+            //$("body").attr("style","cursor:progress");
+            var year = $('#Year').val();
+            var weeks = $('#WeekNumber').val();
+            var StartOfYear = new Date(year,0,1);
+            var FirstMondayOfStartOfYear = StartOfYear.clone().last().monday();
+            var startDate = FirstMondayOfStartOfYear.clone().addWeeks(weeks-1);
+            var endDate = startDate.clone().addWeeks(1);
+            @*$.post("@Url.Action("GetRangeDetail", "StaffShiftSummary")/?memberId=@(Model.Member.Id)&weekNumber=" + weeks + "&startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(), function (dataPartialView) {
+                viewport.html(dataPartialView);
+                //viewport.attr("style","cursor:auto");
+                $("body").attr("style","cursor:auto");
+            });*@
+            var spin_span=$("#spin_span");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRangeDetail")",
+                data: "memberId=@(Model.Member.Id)&weekNumber=" + weeks + "&startDate=" + startDate.toISOString() + "&endDate=" + endDate.toISOString(),
+                beforeSend: function () {
+                    $("#viewBtn").attr("disabled", "disabled");
+                    viewport.html('Loading Data...<img src="/Content/themes/base/images/spinner.gif" width = "18px" height="18px"/>');
+                },
+                complete: function () {
+                    $("#viewBtn").removeAttr('disabled');
+                },
+                success: function (xhr) {
+                    //alert("Response Text : " + xhr);
+                    viewport.html(xhr);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error occuried.");
+                    viewport.html(errorThrown);
+                }
+            });
+        };
+
+        function GetWeekNumbers() {
+            var year = $('#Year').val();
+            var WeekNumberDDL= $('#WeekNumber');
+            var selectedWeekNumbers = WeekNumbers[year];
+            //alert(WeekNumbers[year]);
+            WeekNumberDDL.empty();
+            WeekNumberDDL.append('<option value="">Week Number</option>');
+            $.each(selectedWeekNumbers,function(index,data){
+                //alert("Each of Selected Week Numbers : "+index+" "+data+" "+data[index]);
+                WeekNumberDDL.append("<option value="+data+">"+data+"</option>");
+            });
+            //return WeekNumbers[year];
+        };
+
+        $(function () {
+            var button = $('#viewBtn');
+            button.click(GetData);
+
+            var yearList = $('#Year');
+            yearList.change(GetWeekNumbers);
+
+            GetData();
+        });
+    </script>
+}

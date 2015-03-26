@@ -1,0 +1,78 @@
+﻿@model IEnumerable<GongChaWebApplication.Models.Message>
+
+@using GongChaWebApplication.Models;
+@{
+    
+    ViewBag.Title = "Messages";
+    Layout = "~/Views/Shared/_OperationLayout.cshtml";
+
+    var CurrentMember = (Member)ViewBag.CurrentMember;
+}
+
+<h2>@(ViewBag.Title)</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+</p>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr class="row">
+            <th class="col-md-1">
+                @Html.DisplayNameFor(model => model.Writer.Name)
+            </th>
+            <th class="col-md-1">
+                @Html.DisplayNameFor(model => model.PostTime)
+            </th>
+            <th class="col-md-1">
+                @Html.DisplayNameFor(model => model.EditTime)
+            </th>
+            <th class="col-md-1">
+                @Html.DisplayNameFor(model => model.IsAnnoucement)
+            </th>
+            <th class="col-md-1">
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th class="col-md-6">
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th class="col-md-1"></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="row">
+                <td class="col-md-1">
+                    @Html.DisplayFor(modelItem => item.Writer.Name)
+                </td>
+                <td class="col-md-1">
+                    @Html.DisplayFor(modelItem => item.PostTime)
+                </td>
+                <td class="col-md-1">
+                    @Html.DisplayFor(modelItem => item.EditTime)
+                </td>
+                <td class="col-md-1">
+                    @Html.DisplayFor(modelItem => item.IsAnnoucement)
+                </td>
+                <td class="col-md-1">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td class="col-md-6">
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td class="col-md-1">
+                    @Html.ActionLink("View Thread", "ViewThread", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @if (item.WriterId == CurrentMember.Id)
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" }) 
+                    }
+                    @if ((CurrentMember.AccessLevel == MemberAccessLevels.DIRECTOR) ||
+                        (CurrentMember.AccessLevel == MemberAccessLevels.MANAGER && item.Writer.Store != null && CurrentMember.Store.Id == item.Writer.Store.Id))
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-default" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
